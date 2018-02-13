@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+
+addons:
+  apt:
+    packages:
+    - libudunits2-0
+
+script:
+- python setup.py test -s cc_plugin_imos.tests
