@@ -1,5 +1,7 @@
 # IMOS Compliance Checker Plugin
 
+[![Build Status](https://travis-ci.org/aodn/cc-plugin-imos.png?branch=master)](https://travis-ci.org/aodn/cc-plugin-imos)
+
 This is a checker for compliance with the [IMOS NetCDF Conventions](https://s3-ap-southeast-2.amazonaws.com/content.aodn.org.au/Documents/IMOS/Conventions/IMOS_NetCDF_Conventions.pdf).
 
 It works with the [ioos/compliance-checker](https://github.com/ioos/compliance-checker).
