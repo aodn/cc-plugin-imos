@@ -5,33 +5,30 @@ This is a checker for compliance with the [IMOS NetCDF Conventions](https://s3-a
 It works with the [ioos/compliance-checker](https://github.com/ioos/compliance-checker).
 
 
-### Installation
+## Installation
 
-#### Core compliance-checker
-To use the latest version of the IOOS core checker code, install it first directly from their GitHub repo:
+Clone the repository:
 ```bash
-pip install git+ssh://github.com/aodn/compliance-checker.git#egg=compliance-checker
+git clone git@github.com:aodn/cc-plugin-imos.git
 ```
-Otherwise `pip` will grab the latest *release* from PyPI when you install the plugin.
 
-#### IMOS plugin
+Create a virtual environment and install the plugin (which installs the core checker as a dependency):
 ```bash
-git clone --depth=1 git@github.com:aodn/data-services.git
-cd data-services/lib/cc_plugin_imos
+cd cc-plugin-imos
+mkdir env
+virtualenv env/cc-plugin-imos
+source env/cc-plugin-imos/bin/activate
 pip install -e .
 ```
-The `--depth=1` prevents git unnecessarily cloning the entire history of the data-services repository.
 
-
-### Testing
+## Testing
 
 ```bash
-cd data-services/lib/cc_plugin_imos
 python setup.py test -s cc_plugin_imos.tests
 ```
 
 
-### Usage
+## Usage
 
 `compliance-checker -t=imos file.nc`
 
