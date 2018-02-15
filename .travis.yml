@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
     - libudunits2-0
+    - netcdf-bin
 
 script:
 - python setup.py test -s cc_plugin_imos.tests
