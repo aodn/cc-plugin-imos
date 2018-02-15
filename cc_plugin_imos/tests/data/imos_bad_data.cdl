@@ -17,15 +17,11 @@ variables:
 	int LATITUDE ;
 		LATITUDE:standard_name = "" ;
 		LATITUDE:axis = "" ;
-		LATITUDE:valid_max = "" ;
-		LATITUDE:valid_min = "" ;
 		LATITUDE:units = "" ;
 	int LONGITUDE ;
 		LONGITUDE:standard_name = "" ;
 		LONGITUDE:axis = "" ;
 		LONGITUDE:reference_datum = 123L ;
-		LONGITUDE:valid_min = "" ;
-		LONGITUDE:valid_max = "" ;
 		LONGITUDE:units = "" ;
 	double ticks(ticks) ;
 		ticks:standard_name = "" ;
