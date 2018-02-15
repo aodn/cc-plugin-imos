@@ -526,6 +526,7 @@ class IMOSBaseCheck(BaseNCCheck):
             ret_val.append(result)
 
             result_name = ('var', var.name, 'check_monotonic')
+            var.set_auto_mask(False)  # don't mask out any fill/invalid values (there shouldn't be any!)
             passed = is_monotonic(var.__array__())
             reasoning = None
 
