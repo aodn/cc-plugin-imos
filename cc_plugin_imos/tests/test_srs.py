@@ -32,12 +32,13 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
             return "%s (%s)" % (name[-1], '.'.join(name[:-1]))
         else:
             return "%s ( %s )" % (name[-1], '.'.join(name[:-2]) + ":" + '.'.join(name[-2:]))
+
     __str__ = __repr__
 
     def load_dataset(self, nc_dataset):
-        '''
+        """
         Return a loaded NC Dataset for the given path
-        '''
+        """
         if not isinstance(nc_dataset, str):
             raise ValueError("nc_dataset should be a string")
 
@@ -55,18 +56,18 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
             shutil.rmtree(os.path.dirname(file_path))
 
     def setUp(self):
-        '''
+        """
         Initialize the dataset
-        '''
-        self.srs              = IMOSGHRSSTCheck()
+        """
+        self.srs = IMOSGHRSSTCheck()
         self.srs_good_dataset = self.load_dataset(self.static_files['ghrsst_good_data'])
-        self.srs_bad_dataset  = self.load_dataset(self.static_files['ghrsst_bad_data'])
+        self.srs_bad_dataset = self.load_dataset(self.static_files['ghrsst_bad_data'])
 
     def test_check_global_attributes(self):
         ret_val = self.srs.check_global_attributes(self.srs_bad_dataset)
 
         for result in ret_val:
-            if result.name[1] in ('title'):
+            if result.name[1] == 'title':
                 self.assertFalse(result.value)
 
         ret_val = self.srs.check_global_attributes(self.srs_good_dataset)
@@ -133,17 +134,17 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
 
     def test_check_data_variables(self):
         self.srs.setup(self.srs_good_dataset)
-        ret_val    = self.srs.check_data_variables(self.srs_good_dataset)
+        ret_val = self.srs.check_data_variables(self.srs_good_dataset)
         passed_var = [r.name[1] for r in ret_val if r.value]
         self.assertEqual(len(ret_val), 24)
         self.assertEqual(len(passed_var), 24)
 
         self.srs.setup(self.srs_bad_dataset)
-        ret_val    = self.srs.check_data_variables(self.srs_bad_dataset)
+        ret_val = self.srs.check_data_variables(self.srs_bad_dataset)
         failed_var = [r.name[1] for r in ret_val if not r.value]
         self.assertEqual(len(ret_val), 26)
         self.assertEqual(len(failed_var), 2)
-        self.assertEqual(set(failed_var), set(['random_var']))
+        self.assertEqual(set(failed_var), {'random_var'})
 
     @unittest.skipUnless(netCDF4.__netcdf4libversion__ >= '4.3',
                          'requires netCDF4 library version >= 4.3')
