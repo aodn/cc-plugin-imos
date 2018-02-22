@@ -89,6 +89,11 @@ class IMOSBaseCheck(BaseNCCheck):
             "WOCE quality control procedure"
         ]
 
+        self._coordinate_variables = None
+        self._ancillary_variables = None
+        self._data_variables = None
+        self._quality_control_variables = None
+
     @classmethod
     def beliefs(cls):
         """ This is the method from parent class.
