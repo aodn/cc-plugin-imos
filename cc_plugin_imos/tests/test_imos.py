@@ -695,7 +695,6 @@ class TestIMOS1_3(unittest.TestCase):
         )
         self.assertEqual(len(ret_val), 6)
         passed_var = [r.name[1] for r in ret_val if r.value]
-        failed_var = [r.name[1] for r in ret_val if not r.value]
         good_var = ['TIME_quality_control',
                     'LONGITUDE_quality_control',
                     'LATITUDE_quality_control',
@@ -891,7 +890,6 @@ class TestIMOS1_4(TestIMOS1_3):
         )
         self.assertEqual(len(ret_val), 6)
         passed_var = [r.name[1] for r in ret_val if r.value]
-        failed_var = [r.name[1] for r in ret_val if not r.value]
         good_var = ['new_qc',
                     'LONGITUDE_quality_control',
                     'LATITUDE_quality_control',

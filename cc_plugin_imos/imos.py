@@ -776,7 +776,6 @@ class IMOSBaseCheck(BaseNCCheck):
                     results_axis.append(result)
 
             result_name = ('var', name, 'units', 'vertical')
-            reasoning = [" is not a valid CF distance unit"]
             reasoning = ["Variable %s appears to be a vertical coordinate, should have"
                          " units of distance" % name]
             result = check_value((name, 'units',),

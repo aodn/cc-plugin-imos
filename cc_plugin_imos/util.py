@@ -8,7 +8,7 @@ import re
 from numpy import amax
 from numpy import amin
 
-from netCDF4 import Dataset, Variable
+from netCDF4 import Dataset
 
 from compliance_checker.base import BaseCheck
 from compliance_checker.base import Result
@@ -308,7 +308,6 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
                            check_priority)
 
     if result.value:
-        result = None
         retrieved_value = None
         passed = True
         reasoning_out = None

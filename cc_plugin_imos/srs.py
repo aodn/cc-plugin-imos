@@ -161,7 +161,6 @@ class IMOSGHRSSTCheck(BaseNCCheck):
         Check that a list of variables exists defined by self.mandatory_variables
         """
         ret_val = []
-        result = None
 
         for mandatory_var in self.mandatory_variables:
             result_name = ('var', mandatory_var)
