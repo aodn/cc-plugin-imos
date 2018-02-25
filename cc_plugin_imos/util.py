@@ -1,5 +1,5 @@
-''' Provide helper methods for IMOSChecker class
-'''
+""" Provide helper methods for IMOSChecker class
+"""
 import datetime
 
 import numpy as np
@@ -8,7 +8,7 @@ import re
 from numpy import amax
 from numpy import amin
 
-from netCDF4 import Dataset, Variable
+from netCDF4 import Dataset
 
 from compliance_checker.base import BaseCheck
 from compliance_checker.base import Result
@@ -27,9 +27,9 @@ OPERATOR_SUB_STRING = 6
 OPERATOR_CONVERTIBLE = 7
 OPERATOR_EMAIL = 8
 
-
 numeric_types = [np.float, np.double, np.float16, np.float32, np.float64, np.float128,
                  np.int, np.byte, np.int8, np.int16, np.int32, np.int64]
+
 
 def is_numeric(variable_type):
     """
@@ -38,12 +38,14 @@ def is_numeric(variable_type):
     """
     return variable_type in numeric_types
 
+
 def is_monotonic(array):
     """
     Check whether an array is strictly monotonic
     """
     diff = np.diff(array)
     return np.all(diff < 0) or np.all(diff > 0)
+
 
 def is_timestamp(value):
     """Test whether value is a valid timestamp string (format
@@ -72,10 +74,11 @@ def is_valid_email(email):
     emailregex = \
         "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3\})(\\]?)$"
 
-    if re.match(emailregex, email) != None:
+    if re.match(emailregex, email) is not None:
         return True, None
 
     return False, "is not a valid email address"
+
 
 def vertical_coordinate_type(dataset, variable):
     """Return None if the given variable does not appear to be a vertical
@@ -132,45 +135,47 @@ def vertical_coordinate_type(dataset, variable):
 
 
 def find_variables_from_attribute(dataset, variable, attribute_name):
-    ''' Get variables based on a variable attribute such as coordinates.
-    '''
+    """ Get variables based on a variable attribute such as coordinates.
+    """
     variables = []
     variable_names = getattr(variable, attribute_name, None)
 
     if variable_names is not None:
         for variable_name in variable_names.split(' '):
-            if dataset.variables.has_key(variable_name):
+            if variable_name in dataset.variables:
                 variable = dataset.variables[variable_name]
                 variables.append(variable)
 
     return variables
 
+
 def find_auxiliary_coordinate_variables(dataset):
-    ''' Find all ancillary variables associated with a variable.
-    '''
+    """ Find all ancillary variables associated with a variable.
+    """
     auxiliary_coordinate_variables = []
 
     for name, var in dataset.variables.iteritems():
-        auxiliary_coordinate_variables.extend(\
-            find_variables_from_attribute(dataset, var, 'coordinates'))
+        auxiliary_coordinate_variables.extend(find_variables_from_attribute(dataset, var, 'coordinates'))
 
     return auxiliary_coordinate_variables
 
+
 def find_ancillary_variables_by_variable(dataset, variable):
-    ''' Find all ancillary variables associated with a variable.
-    '''
+    """ Find all ancillary variables associated with a variable.
+    """
     return find_variables_from_attribute(dataset, variable, 'ancillary_variables')
 
+
 def find_ancillary_variables(dataset):
-    ''' Find all ancillary variables.
-    '''
+    """ Find all ancillary variables.
+    """
     ancillary_variables = []
 
     for name, var in dataset.variables.iteritems():
-        ancillary_variables.extend(find_variables_from_attribute(dataset, var, \
-                                     'ancillary_variables'))
+        ancillary_variables.extend(find_variables_from_attribute(dataset, var, 'ancillary_variables'))
 
     return ancillary_variables
+
 
 def find_data_variables(dataset, coordinate_variables, ancillary_variables):
     """
@@ -191,18 +196,18 @@ def find_data_variables(dataset, coordinate_variables, ancillary_variables):
 
     for name, var in dataset.variables.iteritems():
         if var not in coordinate_variables and var not in \
-            ancillary_variables and var.dimensions and var not in \
-            auxiliary_coordinate_variables \
-            and not hasattr(var, 'flag_meanings') \
-            and is_numeric(var.dtype):
-
+                ancillary_variables and var.dimensions and var not in \
+                auxiliary_coordinate_variables \
+                and not hasattr(var, 'flag_meanings') \
+                and is_numeric(var.dtype):
             data_variables.append(var)
 
     return data_variables
 
+
 def find_quality_control_variables(dataset):
-    ''' Find all quality control variables in a given netcdf file
-    '''
+    """ Find all quality control variables in a given netcdf file
+    """
     quality_control_variables = []
 
     for name, var in dataset.variables.iteritems():
@@ -227,6 +232,7 @@ def find_quality_control_variables(dataset):
 
     return quality_control_variables
 
+
 def check_present(name, data, check_type, result_name, check_priority, reasoning=None):
     """
     Help method to check whether a variable, variable attribute
@@ -248,32 +254,34 @@ def check_present(name, data, check_type, result_name, check_priority, reasoning
     reasoning_out = None
 
     if check_type == CHECK_GLOBAL_ATTRIBUTE:
-        result_name_out = result_name or ('globalattr', name[0],'present')
+        result_name_out = result_name or ('globalattr', name[0], 'present')
         if name[0] not in data.ncattrs():
             reasoning_out = reasoning or ["Attribute %s not present" % name[0]]
             passed = False
 
-    if check_type == CHECK_VARIABLE or\
-        check_type == CHECK_VARIABLE_ATTRIBUTE:
-        result_name_out = result_name or ('var', name[0],'present')
+    if check_type == CHECK_VARIABLE or \
+            check_type == CHECK_VARIABLE_ATTRIBUTE:
+        result_name_out = result_name or ('var', name[0], 'present')
 
         variable = data.variables.get(name[0], None)
 
-        if variable == None:
+        if variable is None:
             reasoning_out = reasoning or ['Variable %s not present' % name[0]]
             passed = False
 
         elif check_type == CHECK_VARIABLE_ATTRIBUTE:
-                result_name_out = result_name or ('var', name[0], name[1], 'present')
-                if name[1] not in variable.ncattrs():
-                    reasoning_out = reasoning or ["Variable attribute %s:%s not present" % tuple(name)]
-                    passed = False
+            result_name_out = result_name or ('var', name[0], name[1], 'present')
+            if name[1] not in variable.ncattrs():
+                reasoning_out = reasoning or ["Variable attribute %s:%s not present" % tuple(name)]
+                passed = False
 
     result = Result(check_priority, passed, result_name_out, reasoning_out)
 
     return result
 
-def check_value(name, value, operator, ds, check_type, result_name, check_priority, reasoning=None, skip_check_present=False):
+
+def check_value(name, value, operator, ds, check_type, result_name, check_priority, reasoning=None,
+                skip_check_present=False):
     """
     Help method to compare attribute to value or a variable
     to a value. It also returns a Result object based on whether
@@ -300,7 +308,6 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
                            check_priority)
 
     if result.value:
-        result = None
         retrieved_value = None
         passed = True
         reasoning_out = None
@@ -321,58 +328,51 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
         if operator == OPERATOR_EQUAL:
             if retrieved_value != value:
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Attribute %s should be equal to '%s'" % (retrieved_name, str(value))]
+                reasoning_out = reasoning or ["Attribute %s should be equal to '%s'" % (retrieved_name, str(value))]
 
         if operator == OPERATOR_MIN:
             min_value = amin(variable.__array__())
 
             if not np.isclose(min_value, float(value)):
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Minimum value of %s (%f) does not match attributes (%f)" % \
-                                 (retrieved_name, min_value, float(value))]
+                reasoning_out = reasoning or ["Minimum value of %s (%f) does not match attributes (%f)" %
+                                              (retrieved_name, min_value, float(value))]
 
         if operator == OPERATOR_MAX:
             max_value = amax(variable.__array__())
             if not np.isclose(max_value, float(value)):
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Maximum value of %s (%f) does not match attributes (%f)" % \
-                                 (retrieved_name, max_value, float(value))]
+                reasoning_out = reasoning or ["Maximum value of %s (%f) does not match attributes (%f)" %
+                                              (retrieved_name, max_value, float(value))]
 
         if operator == OPERATOR_DATE_FORMAT:
             try:
                 datetime.datetime.strptime(retrieved_value, value)
             except ValueError:
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Attribute %s is not in correct date/time format (%s)" % \
-                                 (retrieved_name, value)]
+                reasoning_out = reasoning or ["Attribute %s is not in correct date/time format (%s)" %
+                                              (retrieved_name, value)]
 
         if operator == OPERATOR_SUB_STRING:
             if value not in retrieved_value:
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Attribute %s should contain the substring '%s'" % \
-                                 (retrieved_name, value)]
+                reasoning_out = reasoning or ["Attribute %s should contain the substring '%s'" %
+                                              (retrieved_name, value)]
 
         if operator == OPERATOR_CONVERTIBLE:
             if not units_convertible(retrieved_value, value):
                 passed = False
-                reasoning_out = reasoning or \
-                                ["Units %s should be equivalent to %s" % (retrieved_name, value)]
+                reasoning_out = reasoning or ["Units %s should be equivalent to %s" % (retrieved_name, value)]
 
         if operator == OPERATOR_EMAIL:
             if not is_valid_email(retrieved_value)[0]:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s is not a valid email address" % \
-                                              retrieved_name]
+                reasoning_out = reasoning or ["Attribute %s is not a valid email address" % retrieved_name]
 
         if operator == OPERATOR_WITHIN:
             if retrieved_value not in value:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s is not in the expected range (%s)" % \
+                reasoning_out = reasoning or ["Attribute %s is not in the expected range (%s)" %
                                               (retrieved_name, str(value))]
 
         result = Result(check_priority, passed, result_name, reasoning_out)
@@ -383,7 +383,9 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
 
     return result
 
-def check_attribute_type(name, expected_type, ds, check_type, result_name, check_priority, reasoning=None, skip_check_present=False, allow_array=False):
+
+def check_attribute_type(name, expected_type, ds, check_type, result_name, check_priority, reasoning=None,
+                         skip_check_present=False, allow_array=False):
     """
     Check global data attribute and ensure it has the right type.
     params:
@@ -491,7 +493,8 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
     value = getattr(ds, name, None)
 
     if value is None:
-        if optional: return None
+        if optional:
+            return None
         result.value = False
         result.msgs.append("%s missing" % message_name)
         return result
@@ -546,7 +549,7 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
                 "%s does't match expected pattern '%s'" % (message_name, expected)
             )
 
-    else: # unsupported type in second element
+    else:  # unsupported type in second element
         raise TypeError("Second arg in tuple has unsupported type: {}".format(type(expected)))
 
     return result

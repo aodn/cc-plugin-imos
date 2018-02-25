@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-'''
+"""
 Compliance Test Suite for SRS IMOS NetCDF Files
 http://www.imos.org.au/
-'''
+"""
 
 import numpy as np
 
@@ -160,8 +160,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
         """
         Check that a list of variables exists defined by self.mandatory_variables
         """
-        ret_val     = []
-        result      = None
+        ret_val = []
 
         for mandatory_var in self.mandatory_variables:
             result_name = ('var', mandatory_var)
@@ -170,7 +169,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
             else:
                 reasoning = ["Mandatory variable '%s' does not exist" % mandatory_var]
 
-            result = Result(BaseCheck.HIGH, reasoning == None, result_name, reasoning)
+            result = Result(BaseCheck.HIGH, reasoning is None, result_name, reasoning)
             ret_val.append(result)
 
         return ret_val
