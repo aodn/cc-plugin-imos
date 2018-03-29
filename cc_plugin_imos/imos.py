@@ -7,7 +7,7 @@ http://www.imos.org.au/
 import numpy as np
 import re
 from datetime import datetime
-from cf_units import date2num
+from cf_units import date2num, num2date
 
 from compliance_checker.cf.util import find_coord_vars, _possibleaxis, _possibleaxisunits
 from compliance_checker.base import BaseCheck, BaseNCCheck, Result
@@ -24,7 +24,7 @@ from cc_plugin_imos.util import check_present
 from cc_plugin_imos.util import check_value
 from cc_plugin_imos.util import check_attribute_type
 from cc_plugin_imos.util import vertical_coordinate_type
-from cc_plugin_imos.util import check_attribute, check_attribute_dict
+from cc_plugin_imos.util import check_attribute, check_attribute_dict, get_masked_array
 from cc_plugin_imos import __version__
 
 
@@ -372,7 +372,8 @@ class IMOSBaseCheck(BaseNCCheck):
         obs_mins = dict()
         obs_maxs = dict()
         for var in vert_vars:
-            if np.isnan(var.__array__()).all() or (hasattr(var[:], 'mask') and var[:].mask.all()):
+            values = get_masked_array(var)
+            if values.mask.all():
                 continue  # no valid values
 
             # account for differences in positive orientation, if known for both the variable and the global attributes
@@ -381,8 +382,8 @@ class IMOSBaseCheck(BaseNCCheck):
             if vert_pos and var_pos and vert_pos != var_pos:
                 vertical_positive_sign = -1
 
-            obs_mins[var.name] = np.nanmin(vertical_positive_sign * var.__array__())
-            obs_maxs[var.name] = np.nanmax(vertical_positive_sign * var.__array__())
+            obs_mins[var.name] = np.min(vertical_positive_sign * values)
+            obs_maxs[var.name] = np.max(vertical_positive_sign * values)
 
         min_pass = any((np.isclose(vert_min, min_val) for min_val in obs_mins.itervalues()))
         max_pass = any((np.isclose(vert_max, max_val) for max_val in obs_maxs.itervalues()))
@@ -419,8 +420,9 @@ class IMOSBaseCheck(BaseNCCheck):
             date_attribute_format = '%Y-%m-%dT%H:%M:%SZ'
 
             time_var = dataset.variables.get('TIME', None)
-            time_min = np.amin(time_var.__array__())
-            time_max = np.amax(time_var.__array__())
+            time_values = get_masked_array(time_var)
+            time_min = time_values.min()
+            time_max = time_values.max()
 
             time_units = getattr(time_var, "units", None)
             time_calendar = getattr(time_var, "calendar", "gregorian")
@@ -447,7 +449,11 @@ class IMOSBaseCheck(BaseNCCheck):
                 reasoning = None
                 min_pass = np.isclose(time_min, time_coverage_start)
                 if not min_pass:
-                    reasoning = ["Attribute time_coverage_start value doesn't match the minimum TIME value"]
+                    reasoning = [
+                        "Attribute time_coverage_start ({attr}) doesn't match the minimum value of the "
+                        "TIME variable ({var})".format(attr=time_coverage_start_string,
+                                                       var=num2date(time_min, time_units, time_calendar))
+                    ]
 
                 result = Result(BaseCheck.HIGH, min_pass, result_name, reasoning)
                 ret_val.append(result)
@@ -474,7 +480,11 @@ class IMOSBaseCheck(BaseNCCheck):
                 reasoning = None
                 max_pass = np.isclose(time_max, time_coverage_end)
                 if not max_pass:
-                    reasoning = ["Attribute time_coverage_end value doesn't match the maximum TIME value"]
+                    reasoning = [
+                        "Attribute time_coverage_end ({attr}) doesn't match the maximum value of the "
+                        "TIME variable ({var})".format(attr=time_coverage_end_string,
+                                                       var=num2date(time_max, time_units, time_calendar))
+                    ]
 
                 result = Result(BaseCheck.HIGH, max_pass, result_name, reasoning)
                 ret_val.append(result)
@@ -524,8 +534,7 @@ class IMOSBaseCheck(BaseNCCheck):
             ret_val.append(result)
 
             result_name = ('var', var.name, 'check_monotonic')
-            var.set_auto_mask(False)  # don't mask out any fill/invalid values (there shouldn't be any!)
-            passed = is_monotonic(var.__array__())
+            passed = is_monotonic(get_masked_array(var))
             reasoning = None
 
             if not passed:

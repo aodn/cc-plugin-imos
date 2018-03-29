@@ -69,10 +69,10 @@ variables:
 	double TIME(TIME) ;
 		TIME:standard_name = "time" ;
 		TIME:long_name = "time" ;
-		TIME:units = "hours since 1970-01-01 00:00:00 UTC" ;
+		TIME:units = "days since 1950-01-01 00:00:00 UTC" ;
 		TIME:calendar = "gregorian" ;
 		TIME:axis = "T" ;
-		TIME:valid_min = 0. ;
+		TIME:valid_min = 10000. ;
 		TIME:valid_max = 90000. ;
 	int TIMESERIES ;
 		TIMESERIES:long_name = "unique_identifier_for_each_timeseries_feature_instance_in_this_file" ;
@@ -115,14 +115,14 @@ variables:
 		:instrument_nominal_height = 39. ;
 		:instrument_nominal_depth = 16. ;
 		:site_depth_at_deployment = 55. ;
-		:geospatial_vertical_min = 16.f ;
-		:geospatial_vertical_max = 16.f ;
+		:geospatial_vertical_min = -22.222f ;
+		:geospatial_vertical_max = 23.1483f ;
 		:geospatial_vertical_positive = "down" ;
 		:time_deployment_start = "2010-11-11T05:58:00Z" ;
 		:time_deployment_start_origin = "TimeFirstInPos" ;
 		:time_deployment_end = "2011-04-29T04:31:00Z" ;
 		:time_deployment_end_origin = "TimeLastInPos" ;
-		:time_coverage_start = "2010-11-11T00:00:00Z" ;
+		:time_coverage_start = "1950-01-01T00:00:00Z" ;
 		:time_coverage_end = "2011-04-28T08:00:00Z" ;
 		:local_time_zone = 8.0 ;
 		:data_centre = "Australian Ocean Data Network (AODN)" ;
@@ -142,7 +142,7 @@ variables:
 		:history = "2016-07-18T01:04:44Z - depthPP: Depth computed from the 2 nearest pressure sensors available, using the Gibbs-SeaWater toolbox (TEOS-10) v3.05 from latitude and relative pressure measurements (calibration offset usually performed to balance current atmospheric pressure and acute sensor precision at a deployed depth).\n2016-07-18 04:26:24 UTC: passed compliance checks: cf (IOOS compliance checker version 2.2.0, IMOS plugin version 0.9.0)" ;
 data:
 
- DEPTH = _, 17.03845, 17.14089, 16.99426, 16.70422, 16.07214, 17.2725, 
+ DEPTH = _, _, -22.222, -11.1111, 16.70422, 16.07214, 17.2725,
     16.48994, 16.17254, 17.09642, 16.37582, 17.27692, 16.51809, 15.95106, 
     17.38825, 16.45131, 16.30933, 16.88206, 16.65124, 17.13555, 17.53368, 
     16.76055, 17.14427, 16.51801, 16.59242, 16.11634, 16.57016, 16.97042, 
@@ -157,7 +157,7 @@ data:
     16.83448, 16.92782, 17.33577, 16.5793, 16.7105, 17.22507, 16.30822, 
     16.94046, 16.82928, 17.03242, 16.83445, 16.91346, 16.89052 ;
 
- DEPTH_quality_control = 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+ DEPTH_quality_control = 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
@@ -189,7 +189,7 @@ data:
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     1, 1, 1, 1, 1, 1, 1 ;
 
- TIME = 22229, 22230.7534722222, 22232.5069444445, 22234.2604166666, 
+ TIME = 0.0, 22230.7534722222, 22232.5069444445, 22234.2604166666,
     22236.0138888889, 22237.7673611111, 22239.5208333334, 22241.2743055555, 
     22243.0277777778, 22244.78125, 22246.5347222222, 22248.2881944445, 
     22250.0416666666, 22251.7951388889, 22253.5486111111, 22255.3020833334, 

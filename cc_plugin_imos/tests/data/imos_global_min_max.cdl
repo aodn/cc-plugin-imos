@@ -1,0 +1,48 @@
+netcdf imos_global_min_max {
+dimensions:
+	TIME = 11 ;
+variables:
+	double TIME(TIME) ;
+		TIME:standard_name = "time" ;
+		TIME:long_name = "time" ;
+		TIME:units = "days since 1950-01-01 00:00:00 UTC" ;
+		TIME:calendar = "gregorian" ;
+		TIME:axis = "T" ;
+		TIME:valid_min = 0. ;
+		TIME:valid_max = 90000. ;
+	double LATITUDE(TIME) ;
+		LATITUDE:standard_name = "latitude" ;
+		LATITUDE:long_name = "latitude" ;
+		LATITUDE:units = "degrees_north" ;
+		LATITUDE:axis = "Y" ;
+		LATITUDE:reference_datum = "WGS84 coordinate reference system" ;
+		LATITUDE:valid_min = -90. ;
+		LATITUDE:valid_max = 90. ;
+	double LONGITUDE(TIME) ;
+		LONGITUDE:standard_name = "longitude" ;
+		LONGITUDE:long_name = "longitude" ;
+		LONGITUDE:units = "degrees_east" ;
+		LONGITUDE:axis = "X" ;
+		LONGITUDE:reference_datum = "WGS84 coordinate reference system" ;
+		LONGITUDE:valid_min = -180. ;
+		LONGITUDE:valid_max = 180. ;
+
+// global attributes:
+		:geospatial_lat_min = -30.0 ;
+		:geospatial_lat_max = 200.1 ;
+		:geospatial_lat_units = "degrees_north" ;
+		:geospatial_lon_min =  14.0 ;
+		:geospatial_lon_max = 113.94 ;
+		:geospatial_lon_units = "degrees_east" ;
+data:
+
+ LATITUDE =  200.1, -30.00, -21.86, -21.86, -21.86, -21.86,
+            -21.86, -21.86, -21.86, -21.86, -21.86 ;
+
+ LONGITUDE = 2200.0,  14.00, 100.00, 113.94, 113.94, 113.94,
+             113.94, 113.94, 113.94, 113.94, 113.94 ;
+
+ TIME = 22230.7, 22232.5, 22234.2, 22236.0, 22237.7, 22239.5,
+        22241.2, 22243.0, 22244.7, 22246.5, 22248.2 ;
+
+}

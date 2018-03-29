@@ -5,9 +5,6 @@ import datetime
 import numpy as np
 import re
 
-from numpy import amax
-from numpy import amin
-
 from netCDF4 import Dataset
 
 from compliance_checker.base import BaseCheck
@@ -331,7 +328,7 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
                 reasoning_out = reasoning or ["Attribute %s should be equal to '%s'" % (retrieved_name, str(value))]
 
         if operator == OPERATOR_MIN:
-            min_value = amin(variable.__array__())
+            min_value = get_masked_array(variable).min()
 
             if not np.isclose(min_value, float(value)):
                 passed = False
@@ -339,7 +336,7 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
                                               (retrieved_name, min_value, float(value))]
 
         if operator == OPERATOR_MAX:
-            max_value = amax(variable.__array__())
+            max_value = get_masked_array(variable).max()
             if not np.isclose(max_value, float(value)):
                 passed = False
                 reasoning_out = reasoning or ["Maximum value of %s (%f) does not match attributes (%f)" %
@@ -567,3 +564,30 @@ def check_attribute_dict(att_dict, ds, priority=BaseCheck.HIGH, optional=False):
             check_attribute(name, expected, ds, priority, optional=optional)
         )
     return ret_val
+
+
+def get_masked_array(variable):
+    """
+    Return the values of a netCDF variable as a masked array, but only masking out fill values, NOT values outside
+    the valid_min/max range.
+
+    :param netCDF4.Variable variable: netCDF4.Variable object
+    :return: masked array of variable values
+
+    """
+    # Read unmasked values
+    orig_mask = variable.mask
+    variable.set_auto_mask(False)
+    raw = variable[:]
+    variable.set_auto_mask(orig_mask)
+
+    # Now mask out the fillvalues
+    fill_value = getattr(variable, '_FillValue', None)
+    if fill_value is None:
+        mask = False
+    elif np.isnan(fill_value):
+        mask = np.isnan(raw)
+    else:
+        mask = raw == fill_value
+
+    return np.ma.array(raw, mask=mask)
