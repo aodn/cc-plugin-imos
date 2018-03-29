@@ -34,6 +34,7 @@ def static_files_testing():
         'data_var': get_filename('tests/data/imos_data_var.nc'),
         'bad_coords': get_filename('tests/data/imos_bad_coords.nc'),
         'new_data': get_filename('tests/data/imos_new_data.nc'),
+        'global_min_max': get_filename('tests/data/imos_global_min_max.nc'),
         'ghrsst_good_data': get_filename('tests/data/ghrsst_good_data.nc'),
         'ghrsst_bad_data': get_filename('tests/data/ghrsst_bad_data.nc'),
     }
