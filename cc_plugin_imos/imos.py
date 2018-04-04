@@ -39,7 +39,7 @@ class IMOSBaseCheck(BaseNCCheck):
     """
     register_checker = False
     _cc_spec = 'imos'
-    _cc_spec_version = 'base'
+    _cc_spec_version = None
     _cc_checker_version = __version__
     _cc_description = "Integrated Marine Observing System (IMOS) NetCDF Conventions"
     _cc_url = "http://imos.org.au/"
@@ -59,8 +59,9 @@ class IMOSBaseCheck(BaseNCCheck):
     OPERATOR_EMAIL = 8
 
     def __init__(self):
+        conventions = ['CF-1.6', 'IMOS-{version}'.format(version=self._cc_spec_version)]
         self.mandatory_global_attributes = {
-            'Conventions': '(.*,)?CF-1.6,IMOS-%s(,.*)?' % self._cc_spec_version,
+            'Conventions': [','.join(conventions), ' '.join(conventions)],
             'project': ['Integrated Marine Observing System (IMOS)'],
             'naming_authority': ['IMOS'],
             'date_created': is_timestamp,
