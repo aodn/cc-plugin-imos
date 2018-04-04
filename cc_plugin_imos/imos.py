@@ -1125,6 +1125,7 @@ class IMOS1_4Check(IMOSBaseCheck):
     register_checker = True
     _cc_spec_version = '1.4'
     _cc_authors = "Marty Hidas"
+    _cc_url = "http://content.aodn.org.au/Documents/IMOS/Conventions/IMOS_NetCDF_Conventions.pdf"
 
     def __init__(self):
         super(IMOS1_4Check, self).__init__()
