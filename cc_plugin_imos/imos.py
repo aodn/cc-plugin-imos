@@ -1043,7 +1043,7 @@ class IMOS1_3Check(IMOSBaseCheck):
             'distribution_statement': '.*Data may be re-used, provided that related metadata explaining'
                                       ' the data has been reviewed by the user, and the data is appropriately'
                                       ' acknowledged. Data, products and services from IMOS are provided'
-                                      ' "as is" without any warranty as to fitness for a particular purpose.'
+                                      ' "as is" without any warranty as to fitness for a particular purpose\.'
         })
         self.optional_global_attributes.update({
             'quality_control_set': [1, 2, 3, 4]
