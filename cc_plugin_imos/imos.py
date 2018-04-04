@@ -1043,7 +1043,7 @@ class IMOS1_3Check(IMOSBaseCheck):
             'distribution_statement': '.*Data may be re-used, provided that related metadata explaining'
                                       ' the data has been reviewed by the user, and the data is appropriately'
                                       ' acknowledged. Data, products and services from IMOS are provided'
-                                      ' "as is" without any warranty as to fitness for a particular purpose.'
+                                      ' "as is" without any warranty as to fitness for a particular purpose\.'
         })
         self.optional_global_attributes.update({
             'quality_control_set': [1, 2, 3, 4]
@@ -1125,6 +1125,7 @@ class IMOS1_4Check(IMOSBaseCheck):
     register_checker = True
     _cc_spec_version = '1.4'
     _cc_authors = "Marty Hidas"
+    _cc_url = "http://content.aodn.org.au/Documents/IMOS/Conventions/IMOS_NetCDF_Conventions.pdf"
 
     def __init__(self):
         super(IMOS1_4Check, self).__init__()
