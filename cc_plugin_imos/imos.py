@@ -44,6 +44,11 @@ class IMOSBaseCheck(BaseNCCheck):
     _cc_description = "Integrated Marine Observing System (IMOS) NetCDF Conventions"
     _cc_url = "http://imos.org.au/"
     _cc_authors = "Xiao Ming Fu, Marty Hidas"
+    _cc_display_headers = {
+        3: 'Required',
+        2: 'Recommended',
+        1: 'Suggested'
+    }
 
     CHECK_VARIABLE = 1
     CHECK_GLOBAL_ATTRIBUTE = 0

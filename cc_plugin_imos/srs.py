@@ -29,6 +29,11 @@ class IMOSGHRSSTCheck(BaseNCCheck):
     _cc_description = "Integrated Marine Observing System (IMOS) GHRSST checker"
     _cc_url = "http://imos.org.au/"
     _cc_authors = "Laurent Besnard"
+    _cc_display_headers = {
+        3: 'Required',
+        2: 'Recommended',
+        1: 'Suggested'
+    }
 
     def __init__(self):
         self.imos_1_3_check = IMOS1_3Check()
