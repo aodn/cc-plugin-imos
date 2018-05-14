@@ -51,12 +51,12 @@ def is_timestamp(value):
 
     """
     if not isinstance(value, basestring):
-        return False, "should be a timestamp string"
+        return False, "should be a timestamp string."
 
     try:
         datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
     except ValueError:
-        return False, "is not in correct date/time format ('YYYY-MM-DDThh:mm:ssZ')"
+        return False, "is not in correct date/time format ('YYYY-MM-DDThh:mm:ssZ')."
 
     return True, None
 
@@ -74,7 +74,7 @@ def is_valid_email(email):
     if re.match(emailregex, email) is not None:
         return True, None
 
-    return False, "is not a valid email address"
+    return False, "is not a valid email address."
 
 
 def vertical_coordinate_type(dataset, variable):
@@ -251,25 +251,25 @@ def check_present(name, data, check_type, result_name, check_priority, reasoning
     reasoning_out = None
 
     if check_type == CHECK_GLOBAL_ATTRIBUTE:
-        result_name_out = result_name or ('globalattr', name[0], 'present')
+        result_name_out = result_name or name[0]
         if name[0] not in data.ncattrs():
-            reasoning_out = reasoning or ["Attribute %s not present" % name[0]]
+            reasoning_out = reasoning or ["Global attribute '%s' not present." % name[0]]
             passed = False
 
     if check_type == CHECK_VARIABLE or \
             check_type == CHECK_VARIABLE_ATTRIBUTE:
-        result_name_out = result_name or ('var', name[0], 'present')
+        result_name_out = result_name or name[0]
 
         variable = data.variables.get(name[0], None)
 
         if variable is None:
-            reasoning_out = reasoning or ['Variable %s not present' % name[0]]
+            reasoning_out = reasoning or ['Variable %s not present.' % name[0]]
             passed = False
 
         elif check_type == CHECK_VARIABLE_ATTRIBUTE:
-            result_name_out = result_name or ('var', name[0], name[1], 'present')
+            result_name_out = result_name or name[0]
             if name[1] not in variable.ncattrs():
-                reasoning_out = reasoning or ["Variable attribute %s:%s not present" % tuple(name)]
+                reasoning_out = reasoning or ["Variable attribute %s:%s not present." % tuple(name)]
                 passed = False
 
     result = Result(check_priority, passed, result_name_out, reasoning_out)
@@ -325,21 +325,21 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
         if operator == OPERATOR_EQUAL:
             if retrieved_value != value:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s should be equal to '%s'" % (retrieved_name, str(value))]
+                reasoning_out = reasoning or ["Attribute %s should be equal to '%s'." % (retrieved_name, str(value))]
 
         if operator == OPERATOR_MIN:
             min_value = get_masked_array(variable).min()
 
             if not np.isclose(min_value, float(value)):
                 passed = False
-                reasoning_out = reasoning or ["Minimum value of %s (%f) does not match attributes (%f)" %
+                reasoning_out = reasoning or ["Minimum value of %s (%f) does not match attributes (%f)." %
                                               (retrieved_name, min_value, float(value))]
 
         if operator == OPERATOR_MAX:
             max_value = get_masked_array(variable).max()
             if not np.isclose(max_value, float(value)):
                 passed = False
-                reasoning_out = reasoning or ["Maximum value of %s (%f) does not match attributes (%f)" %
+                reasoning_out = reasoning or ["Maximum value of %s (%f) does not match attributes (%f)." %
                                               (retrieved_name, max_value, float(value))]
 
         if operator == OPERATOR_DATE_FORMAT:
@@ -347,29 +347,29 @@ def check_value(name, value, operator, ds, check_type, result_name, check_priori
                 datetime.datetime.strptime(retrieved_value, value)
             except ValueError:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s is not in correct date/time format (%s)" %
+                reasoning_out = reasoning or ["Attribute %s is not in correct date/time format (%s)." %
                                               (retrieved_name, value)]
 
         if operator == OPERATOR_SUB_STRING:
             if value not in retrieved_value:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s should contain the substring '%s'" %
+                reasoning_out = reasoning or ["Attribute %s should contain the substring '%s'." %
                                               (retrieved_name, value)]
 
         if operator == OPERATOR_CONVERTIBLE:
             if not units_convertible(retrieved_value, value):
                 passed = False
-                reasoning_out = reasoning or ["Units %s should be equivalent to %s" % (retrieved_name, value)]
+                reasoning_out = reasoning or ["Units %s should be equivalent to %s." % (retrieved_name, value)]
 
         if operator == OPERATOR_EMAIL:
             if not is_valid_email(retrieved_value)[0]:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s is not a valid email address" % retrieved_name]
+                reasoning_out = reasoning or ["Attribute %s is not a valid email address." % retrieved_name]
 
         if operator == OPERATOR_WITHIN:
             if retrieved_value not in value:
                 passed = False
-                reasoning_out = reasoning or ["Attribute %s is not in the expected range (%s)" %
+                reasoning_out = reasoning or ["Attribute %s is not in the expected range (%s)." %
                                               (retrieved_name, str(value))]
 
         result = Result(check_priority, passed, result_name, reasoning_out)
@@ -422,7 +422,7 @@ def check_attribute_type(name, expected_type, ds, check_type, result_name, check
 
         # check for array-valued attribute
         if isinstance(attribute_value, np.ndarray) and not allow_array:
-            reasoning = ["%s should be a single value of type %s" % (attribute_name, str(expected_type))]
+            reasoning = ["%s should be a single value of type %s." % (attribute_name, str(expected_type))]
             passed = False
 
         elif dtype is not None:
@@ -441,7 +441,7 @@ def check_attribute_type(name, expected_type, ds, check_type, result_name, check
 
         if not passed:
             if not reasoning:
-                reasoning = ["%s should have type %s" % (attribute_name, str(expected_type))]
+                reasoning = ["%s should have type %s." % (attribute_name, str(expected_type))]
             result = Result(check_priority, False, result_name, reasoning)
         else:
             result = Result(check_priority, True, result_name, None)
@@ -481,11 +481,11 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
     """
     if result_name is None:
         if isinstance(ds, Dataset):
-            result_name = ('globalattr', name)
-            message_name = "Attribute %s" % name
+            result_name = name
+            message_name = "Global attribute '{name}'".format(name=name)
         else:
-            result_name = ('var', ds.name, name)
-            message_name = "Attribute %s:%s" % (ds.name, name)
+            result_name = ds.name
+            message_name = "Attribute '{name}'".format(name=name)
     result = Result(priority, name=result_name, msgs=[])
     value = getattr(ds, name, None)
 
@@ -493,7 +493,7 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         if optional:
             return None
         result.value = False
-        result.msgs.append("%s missing" % message_name)
+        result.msgs.append("%s missing." % message_name)
         return result
 
     if expected is None:
@@ -501,7 +501,7 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         try:
             if not value.strip():
                 result.value = False
-                result.msgs.append("%s is empty or completely whitespace" % message_name)
+                result.msgs.append("%s is empty or completely whitespace." % message_name)
             else:
                 result.value = True
         # if not a string/has no strip method we should be OK
@@ -513,10 +513,13 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
             result.value = True
         else:
             result.value = False
-            if len(expected) == 1:
-                msg = "%s should be equal to %s" % (message_name, expected[0])
+            if len(expected) > 1:
+                msg = "{name} should be one of {exp}.".format(name=message_name, exp=expected)
+            elif isinstance(expected[0], basestring):
+                msg = "{name} should be set to \"{exp}\".".format(name=message_name, exp=expected[0])
             else:
-                msg = "%s should be one of %s" % (message_name, expected)
+                msg = "{name} should be set to {exp}.".format(name=message_name, exp=expected[0])
+
             result.msgs.append(msg)
 
     elif isinstance(expected, type):
@@ -525,25 +528,25 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         else:
             result.value = False
             result.msgs.append(
-                '%s should be of %s' % (message_name, str(expected).strip('<>'))
+                '%s should be of %s.' % (message_name, str(expected).strip('<>'))
                 # str(expected) looks like "<type 'float'>"
             )
 
     elif hasattr(expected, '__call__'):
         result.value, message = expected(value)
         if not result.value and message:
-            result.msgs.append('%s %s' % (message_name, message))
+            result.msgs.append('%s %s.' % (message_name, message))
 
     elif isinstance(expected, basestring):
         if not isinstance(value, basestring):
             result.value = False
-            result.msgs.append('%s should be a string' % message_name)
+            result.msgs.append('%s should be a string.' % message_name)
         elif re.match(expected, value):
             result.value = True
         else:
             result.value = False
             result.msgs.append(
-                "%s does't match expected pattern '%s'" % (message_name, expected)
+                "%s does't match expected pattern \"%s\"." % (message_name, expected)
             )
 
     else:  # unsupported type in second element
