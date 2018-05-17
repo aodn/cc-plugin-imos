@@ -120,7 +120,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
             result = Result(BaseCheck.MEDIUM, True, name='time')
             if time_var.dtype != np.int32:
                 result.value = False
-                result.msgs = ["The time variable should be of type int"]
+                result.msgs = ["The time variable should be of type int."]
             ret_val.append(result)
 
             ret_val.extend(
@@ -172,7 +172,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
             if mandatory_var in dataset.variables.keys():
                 reasoning = None
             else:
-                reasoning = ["Mandatory variable '%s' does not exist" % mandatory_var]
+                reasoning = ["Mandatory variable '%s' does not exist." % mandatory_var]
 
             result = Result(BaseCheck.HIGH, reasoning is None, result_name, reasoning)
             ret_val.append(result)
