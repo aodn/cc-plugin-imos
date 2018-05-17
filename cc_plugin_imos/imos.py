@@ -128,7 +128,7 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
         result_name = name
-        reasoning = ["Attribute type is not string"]
+        reasoning = ["Attribute type is not string."]
         result = check_attribute_type((name,),
                                       basestring,
                                       dataset,
@@ -391,15 +391,15 @@ class IMOSBaseCheck(BaseNCCheck):
 
         reasoning = []
         if not min_pass:
-            reasoning = ["geospatial_vertical_min value (%s) did not match minimum value "
-                         "of any vertical variable %s" % (vert_min, obs_mins)]
+            reasoning = ["Global attribute 'geospatial_vertical_min' (%s) doesn't match minimum value "
+                         "of any vertical variable %s." % (vert_min, obs_mins)]
         result_name = 'geospatial_vertical_min'
         ret_val.append(Result(BaseCheck.HIGH, min_pass, result_name, reasoning))
 
         reasoning = []
         if not max_pass:
-            reasoning = ["geospatial_vertical_max value (%s) did not match maximum value "
-                         "of any vertical variable %s" % (vert_max, obs_maxs)]
+            reasoning = ["Global attribute 'geospatial_vertical_max' (%s) doesn't match maximum value "
+                         "of any vertical variable %s." % (vert_max, obs_maxs)]
         result_name = 'geospatial_vertical_max'
         ret_val.append(Result(BaseCheck.HIGH, max_pass, result_name, reasoning))
 
@@ -449,9 +449,9 @@ class IMOSBaseCheck(BaseNCCheck):
                 min_pass = np.isclose(time_min, time_coverage_start)
                 if not min_pass:
                     reasoning = [
-                        "Attribute time_coverage_start ({attr}) doesn't match the minimum value of the "
-                        "TIME variable ({var}).".format(attr=time_coverage_start_string,
-                                                        var=num2date(time_min, time_units, time_calendar))
+                        "Global attribute 'time_coverage_start' ({attr}) doesn't match the minimum value of "
+                        "the TIME variable ({var}).".format(attr=time_coverage_start_string,
+                                                            var=num2date(time_min, time_units, time_calendar))
                     ]
 
                 result = Result(BaseCheck.HIGH, min_pass, result_name, reasoning)
@@ -479,7 +479,7 @@ class IMOSBaseCheck(BaseNCCheck):
                 max_pass = np.isclose(time_max, time_coverage_end)
                 if not max_pass:
                     reasoning = [
-                        "Attribute time_coverage_end ({attr}) doesn't match the maximum value of the "
+                        "Global attribute 'time_coverage_end' ({attr}) doesn't match the maximum value of the "
                         "TIME variable ({var}).".format(attr=time_coverage_end_string,
                                                         var=num2date(time_max, time_units, time_calendar))
                     ]
@@ -784,7 +784,7 @@ class IMOSBaseCheck(BaseNCCheck):
                     results_axis.append(result)
 
             reasoning = ["Variable %s appears to be a vertical coordinate, should have"
-                         " units of distance" % name]
+                         " units of distance." % name]
             result = check_value((name, 'units',),
                                  'meter',
                                  self.OPERATOR_CONVERTIBLE,
@@ -795,7 +795,7 @@ class IMOSBaseCheck(BaseNCCheck):
                                  reasoning)
             ret_val.append(result)
 
-            reasoning = ["Variable %s should have type Double or Float" % name]
+            reasoning = ["Variable %s should have type Double or Float." % name]
             result = check_attribute_type((name,),
                                           [np.float64, np.float, np.float32, np.float16, np.float128],
                                           dataset,
@@ -888,8 +888,8 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
         for qc_variable in self._quality_control_variables:
-            result_name = ('qc_var', qc_variable.name, 'ends_in_quality_control')
-            reasoning = ["the qc variable '%s' does not end in '_quality_control'" % qc_variable.name]
+            result_name = qc_variable.name
+            reasoning = ["The name of QC variable '%s' should end in '_quality_control'." % qc_variable.name]
             qc_variable_root_name = re.findall('^(.*)_quality_control$',
                                                qc_variable.name)  # returns a list with the root names, if matched
             if qc_variable_root_name:
@@ -903,8 +903,11 @@ class IMOSBaseCheck(BaseNCCheck):
             if not qc_variable_root_name:
                 continue
 
-            result_name = ('qc_var', qc_variable.name, 'match_with_variable')
-            reasoning = ["there is no data variable name '%s' for '%s'" % (qc_variable_root_name, qc_variable.name)]
+            result_name = qc_variable.name
+            reasoning = [
+                "There is no data variable named '{data}' associated with "
+                "QC variable '{qc}'.".format(data=qc_variable_root_name, qc=qc_variable.name)
+            ]
             match = False
             if qc_variable_root_name in dataset.variables.keys():
                 reasoning = []
@@ -931,8 +934,8 @@ class IMOSBaseCheck(BaseNCCheck):
                         result = Result(BaseCheck.HIGH, True, result_name, None)
                     else:
                         reasoning = [
-                            "Quality control variable should have the same dimensions as its "
-                            "associated data variable ({data}).".format(data=data_variable.name)
+                            "Quality control variable {qc} should have the same dimensions as its "
+                            "associated data variable ({data}).".format(qc=qc_variable.name, data=data_variable.name)
                         ]
                         result = Result(BaseCheck.HIGH, False, result_name, reasoning)
 
@@ -954,8 +957,8 @@ class IMOSBaseCheck(BaseNCCheck):
                 result = Result(BaseCheck.MEDIUM, True, result_name, None)
             else:
                 reasoning = [
-                    "Quality control variable is not listed in any data variable's "
-                    "'ancillary_variables' attribute."
+                    "Quality control variable {qc} is not listed in any data variable's "
+                    "'ancillary_variables' attribute.".format(qc=quality_var.name)
                 ]
                 result = Result(BaseCheck.MEDIUM, False, result_name, reasoning)
 
@@ -1076,7 +1079,7 @@ class IMOS1_3Check(IMOSBaseCheck):
         reasoning = None
         if acknowledgement is None:
             present = False
-            reasoning = ['Missing global attribute acknowledgement.']
+            reasoning = ["Missing global attribute 'acknowledgement'."]
         result_name = 'acknowledgement'
         result = Result(BaseCheck.HIGH, present, result_name, reasoning)
 
@@ -1088,7 +1091,7 @@ class IMOS1_3Check(IMOSBaseCheck):
 
         # test whether old or new substrings match the attribute value
         passed = False
-        reasoning = ["acknowledgement string doesn't contain the required text."]
+        reasoning = ["Global attribute 'acknowledgement' doesn't contain the required text."]
         if re.match(old_pattern, acknowledgement) or \
                 re.match(new_pattern, acknowledgement):
             passed = True

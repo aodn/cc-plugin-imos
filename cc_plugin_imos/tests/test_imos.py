@@ -479,7 +479,10 @@ class TestIMOS1_3(unittest.TestCase):
         self.assertListEqual(attributes, passed)
         failed = {r.name: r.msgs[0] for r in ret_val if not r.value}
         for a in attributes:
-            self.assertRegexpMatches(failed[a], "{a} value (.*) did not match".format(a=a))
+            self.assertRegexpMatches(failed[a],
+                                     "{a}.*doesn't match {m}imum value".format(a=a,
+                                                                               m=a[-3:])
+                                     )
 
         ret_val = self.imos.check_geospatial_vertical_min_max(self.missing_dataset)
         self.assertEqual(len(ret_val), 0)
