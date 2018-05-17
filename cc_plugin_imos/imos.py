@@ -44,6 +44,11 @@ class IMOSBaseCheck(BaseNCCheck):
     _cc_description = "Integrated Marine Observing System (IMOS) NetCDF Conventions"
     _cc_url = "http://imos.org.au/"
     _cc_authors = "Xiao Ming Fu, Marty Hidas"
+    _cc_display_headers = {
+        3: 'Required',
+        2: 'Recommended',
+        1: 'Suggested'
+    }
 
     CHECK_VARIABLE = 1
     CHECK_GLOBAL_ATTRIBUTE = 0
@@ -122,7 +127,7 @@ class IMOSBaseCheck(BaseNCCheck):
             result (list): a list of Result objects
         """
         ret_val = []
-        result_name = ('globalattr', name, 'check_atttribute_type')
+        result_name = name
         reasoning = ["Attribute type is not string"]
         result = check_attribute_type((name,),
                                       basestring,
@@ -159,11 +164,11 @@ class IMOSBaseCheck(BaseNCCheck):
         for name in dataset.ncattrs():
             attribute_value = getattr(dataset, name)
             if isinstance(attribute_value, basestring):
-                result_name = ('globalattr', name, 'check_attribute_empty')
+                result_name = name
                 reasoning = None
                 if not attribute_value:
                     # empty global attribute
-                    reasoning = ["Attribute value is empty"]
+                    reasoning = ["Global attribute '{name}' is empty.".format(name=name)]
 
                 result = Result(BaseCheck.HIGH, reasoning is None, result_name, reasoning)
                 ret_val.append(result)
@@ -181,11 +186,11 @@ class IMOSBaseCheck(BaseNCCheck):
                 attribute_value = getattr(variable, attribute_name)
 
                 if isinstance(attribute_value, basestring):
-                    result_name = ('var', variable_name, attribute_name, 'check_attribute_empty')
+                    result_name = variable_name
                     reasoning = None
                     if not attribute_value:
                         # empty variable attribute
-                        reasoning = ["Attribute value is empty"]
+                        reasoning = ["Attribute '{name}' is empty.".format(name=attribute_name)]
 
                     result = Result(BaseCheck.HIGH, reasoning is None, result_name, reasoning)
                     ret_val.append(result)
@@ -199,13 +204,12 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
 
-        result_name = ('globalattr', 'geospatial_lat_min', 'check_attribute_type')
+        result_name = 'geospatial_lat_min'
         result = check_present(('LATITUDE',), dataset, self.CHECK_VARIABLE,
                                result_name,
                                BaseCheck.HIGH)
 
         if result.value:
-            result_name = ('globalattr', 'geospatial_lat_min', 'check_attribute_type')
             result = check_attribute_type(('geospatial_lat_min',),
                                           numeric_types,
                                           dataset,
@@ -219,7 +223,6 @@ class IMOSBaseCheck(BaseNCCheck):
 
             if result.value:
                 geospatial_lat_min = getattr(dataset, "geospatial_lat_min", None)
-                result_name = ('globalattr', 'geospatial_lat_min', 'check_minimum_value')
                 result = check_value(('LATITUDE',),
                                      geospatial_lat_min,
                                      self.OPERATOR_MIN,
@@ -229,7 +232,7 @@ class IMOSBaseCheck(BaseNCCheck):
                                      BaseCheck.HIGH)
                 ret_val.append(result)
 
-            result_name = ('globalattr', 'geospatial_lat_max', 'check_attribute_type')
+            result_name = 'geospatial_lat_max'
             result2 = check_attribute_type(('geospatial_lat_max',),
                                            numeric_types,
                                            dataset,
@@ -242,7 +245,6 @@ class IMOSBaseCheck(BaseNCCheck):
 
             if result2.value:
                 geospatial_lat_max = getattr(dataset, "geospatial_lat_max", None)
-                result_name = ('globalattr', 'geospatial_lat_max', 'check_maximum_value')
                 result = check_value(('LATITUDE',),
                                      geospatial_lat_max,
                                      self.OPERATOR_MAX,
@@ -261,13 +263,12 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
 
-        result_name = ('globalattr', 'geospatial_lon_min', 'check_attribute_type')
+        result_name = 'geospatial_lon_min'
         result = check_present(('LONGITUDE',), dataset, self.CHECK_VARIABLE,
                                result_name,
                                BaseCheck.HIGH)
 
         if result.value:
-            result_name = ('globalattr', 'geospatial_lon_min', 'check_attribute_type')
             result = check_attribute_type(('geospatial_lon_min',),
                                           numeric_types,
                                           dataset,
@@ -281,7 +282,6 @@ class IMOSBaseCheck(BaseNCCheck):
 
             if result.value:
                 geospatial_lon_min = getattr(dataset, "geospatial_lon_min", None)
-                result_name = ('globalattr', 'geospatial_lon_min', 'check_minimum_value')
                 result = check_value(('LONGITUDE',),
                                      geospatial_lon_min,
                                      self.OPERATOR_MIN,
@@ -291,7 +291,7 @@ class IMOSBaseCheck(BaseNCCheck):
                                      BaseCheck.HIGH)
                 ret_val.append(result)
 
-            result_name = ('globalattr', 'geospatial_lon_max', 'check_attribute_type')
+            result_name = 'geospatial_lon_max'
             result2 = check_attribute_type(('geospatial_lon_max',),
                                            numeric_types,
                                            dataset,
@@ -304,7 +304,6 @@ class IMOSBaseCheck(BaseNCCheck):
 
             if result2.value:
                 geospatial_lon_max = getattr(dataset, "geospatial_lon_max", None)
-                result_name = ('globalattr', 'geospatial_lon_max', 'check_maximum_value')
                 result = check_value(('LONGITUDE',),
                                      geospatial_lon_max,
                                      self.OPERATOR_MAX,
@@ -342,10 +341,11 @@ class IMOSBaseCheck(BaseNCCheck):
                 # no vertical information at all, nothing to report
                 return []
 
-            reasoning = ['Could not find vertical variable to check values of ''geospatial_vertical_min/max']
+            reasoning = ["Could not find vertical variable to check values"
+                         " of global attributes 'geospatial_vertical_min/max'."]
             result = Result(BaseCheck.MEDIUM,
                             False,
-                            ('globalattr', 'geospatial_vertical_extent', 'variable_present'),
+                            'geospatial_vertical_min/max',
                             reasoning)
             return [result]
 
@@ -353,7 +353,7 @@ class IMOSBaseCheck(BaseNCCheck):
         ret_val = []
         bad_attr = False
         for attr in ['geospatial_vertical_min', 'geospatial_vertical_max']:
-            result_name = ('globalattr', attr, 'type')
+            result_name = attr
             result = check_attribute_type((attr,),
                                           numeric_types,
                                           dataset,
@@ -393,14 +393,14 @@ class IMOSBaseCheck(BaseNCCheck):
         if not min_pass:
             reasoning = ["geospatial_vertical_min value (%s) did not match minimum value "
                          "of any vertical variable %s" % (vert_min, obs_mins)]
-        result_name = ('globalattr', 'geospatial_vertical_min', 'match_data')
+        result_name = 'geospatial_vertical_min'
         ret_val.append(Result(BaseCheck.HIGH, min_pass, result_name, reasoning))
 
         reasoning = []
         if not max_pass:
             reasoning = ["geospatial_vertical_max value (%s) did not match maximum value "
                          "of any vertical variable %s" % (vert_max, obs_maxs)]
-        result_name = ('globalattr', 'geospatial_vertical_max', 'match_data')
+        result_name = 'geospatial_vertical_max'
         ret_val.append(Result(BaseCheck.HIGH, max_pass, result_name, reasoning))
 
         return ret_val
@@ -411,7 +411,7 @@ class IMOSBaseCheck(BaseNCCheck):
         approximately match range in data and format 'YYYY-MM-DDThh:mm:ssZ'
         """
         ret_val = []
-        result_name = ('globalattr', 'time_coverage_start', 'check_date_format')
+        result_name = 'time_coverage_start'
 
         result = check_present(('TIME',), dataset, self.CHECK_VARIABLE,
                                result_name,
@@ -431,7 +431,6 @@ class IMOSBaseCheck(BaseNCCheck):
             results = self._check_str_type(dataset, 'time_coverage_start')
             result = results[0]
             if result.value:
-                result_name = ('globalattr', 'time_coverage_start', 'check_date_format')
                 result = check_value(('time_coverage_start',),
                                      date_attribute_format,
                                      self.OPERATOR_DATE_FORMAT,
@@ -446,14 +445,13 @@ class IMOSBaseCheck(BaseNCCheck):
                 time_coverage_start_string = getattr(dataset, "time_coverage_start", None)
                 time_coverage_start_datetime = datetime.strptime(time_coverage_start_string, date_attribute_format)
                 time_coverage_start = date2num(time_coverage_start_datetime, time_units, time_calendar)
-                result_name = ('globalattr', 'time_coverage_start', 'match_min_TIME')
                 reasoning = None
                 min_pass = np.isclose(time_min, time_coverage_start)
                 if not min_pass:
                     reasoning = [
                         "Attribute time_coverage_start ({attr}) doesn't match the minimum value of the "
-                        "TIME variable ({var})".format(attr=time_coverage_start_string,
-                                                       var=num2date(time_min, time_units, time_calendar))
+                        "TIME variable ({var}).".format(attr=time_coverage_start_string,
+                                                        var=num2date(time_min, time_units, time_calendar))
                     ]
 
                 result = Result(BaseCheck.HIGH, min_pass, result_name, reasoning)
@@ -462,7 +460,7 @@ class IMOSBaseCheck(BaseNCCheck):
             results = self._check_str_type(dataset, 'time_coverage_end')
             result = results[0]
             if result.value:
-                result_name = ('globalattr', 'time_coverage_end', 'check_date_format')
+                result_name = 'time_coverage_end'
                 result = check_value(('time_coverage_end',),
                                      date_attribute_format,
                                      self.OPERATOR_DATE_FORMAT,
@@ -477,14 +475,13 @@ class IMOSBaseCheck(BaseNCCheck):
                 time_coverage_end_string = getattr(dataset, "time_coverage_end", None)
                 time_coverage_end_datetime = datetime.strptime(time_coverage_end_string, date_attribute_format)
                 time_coverage_end = date2num(time_coverage_end_datetime, time_units, time_calendar)
-                result_name = ('globalattr', 'time_coverage_end', 'match_max_TIME')
                 reasoning = None
                 max_pass = np.isclose(time_max, time_coverage_end)
                 if not max_pass:
                     reasoning = [
                         "Attribute time_coverage_end ({attr}) doesn't match the maximum value of the "
-                        "TIME variable ({var})".format(attr=time_coverage_end_string,
-                                                       var=num2date(time_max, time_units, time_calendar))
+                        "TIME variable ({var}).".format(attr=time_coverage_end_string,
+                                                        var=num2date(time_max, time_units, time_calendar))
                     ]
 
                 result = Result(BaseCheck.HIGH, max_pass, result_name, reasoning)
@@ -498,8 +495,8 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
         for name, var in dataset.variables.iteritems():
-            result_name = ('var', name, 'long_name', 'check_atttribute_type')
-            reasoning = ["Attribute type is not string"]
+            result_name = name
+            reasoning = ["Attribute 'long_name' should be a string."]
 
             result = check_attribute_type((name, 'long_name',),
                                           basestring,
@@ -524,22 +521,21 @@ class IMOSBaseCheck(BaseNCCheck):
 
         ret_val = []
         for var in self._coordinate_variables:
-            result_name = ('var', 'coordinate_variable', var.name, 'check_variable_type')
+            result_name = var.name
             passed = True
             reasoning = None
             if not is_numeric(var.datatype):
-                reasoning = ["Variable type is not numeric"]
+                reasoning = ["Coordinate variable should be of numeric type."]
                 passed = False
 
             result = Result(BaseCheck.HIGH, passed, result_name, reasoning)
             ret_val.append(result)
 
-            result_name = ('var', var.name, 'check_monotonic')
             passed = is_monotonic(get_masked_array(var))
             reasoning = None
 
             if not passed:
-                reasoning = ["Variable values are not monotonic"]
+                reasoning = ["Coordinate variable values should be monotonic."]
 
             result = Result(BaseCheck.HIGH, passed, result_name, reasoning)
             ret_val.append(result)
@@ -550,10 +546,10 @@ class IMOSBaseCheck(BaseNCCheck):
                     or hasattr(var, 'positive'):
                 space_time_passed = True
 
-        result_name = ('var', 'coordinate_variable', 'space_time_coordinate_present')
+        result_name = 'Coordinate variables'
         reasoning = None
         if not space_time_passed:
-            reasoning = ["No space-time coordinate variable found"]
+            reasoning = ["File should contain at least one space-time coordinate variable (none found)."]
         result = Result(BaseCheck.HIGH, space_time_passed, result_name, reasoning)
         ret_val.append(result)
 
@@ -583,10 +579,10 @@ class IMOSBaseCheck(BaseNCCheck):
         if 'TIME' in dataset.variables:
             time_var = dataset.variables['TIME']
 
-            result = Result(BaseCheck.MEDIUM, True, name=('var', 'TIME'))
+            result = Result(BaseCheck.MEDIUM, True, name='TIME')
             if time_var.dtype != np.float64:
                 result.value = False
-                result.msgs = ["The TIME variable should be of type double (64-bit)"]
+                result.msgs = ["The TIME variable should be of type double (64-bit)."]
             ret_val.append(result)
 
             ret_val.extend(
@@ -625,10 +621,10 @@ class IMOSBaseCheck(BaseNCCheck):
         if 'LONGITUDE' in dataset.variables:
             longitude_var = dataset.variables['LONGITUDE']
 
-            result = Result(BaseCheck.MEDIUM, True, name=('var', 'LONGITUDE'))
+            result = Result(BaseCheck.MEDIUM, True, name='LONGITUDE')
             if longitude_var.dtype not in [np.float16, np.float32, np.float64, np.float128]:
                 result.value = False
-                result.msgs = ["The LONGITUDE variable should be of type double or float"]
+                result.msgs = ["The LONGITUDE variable should be of type double or float."]
             ret_val.append(result)
 
             ret_val.extend(
@@ -642,8 +638,10 @@ class IMOSBaseCheck(BaseNCCheck):
             valid_min = getattr(longitude_var, 'valid_min', None)
             valid_max = getattr(longitude_var, 'valid_max', None)
             if (valid_min, valid_max) not in valid_range_expected:
-                result = Result(BaseCheck.HIGH, False, name=('var', 'LONGITUDE', 'valid_min/max'))
-                result.msgs = ['(valid_min, valid_max) should be %s or %s' % valid_range_expected]
+                result = Result(BaseCheck.HIGH, False, name='LONGITUDE')
+                result.msgs = [
+                    'Attributes (valid_min, valid_max) should be %s or %s.' % valid_range_expected
+                ]
                 ret_val.append(result)
 
         return ret_val
@@ -671,10 +669,10 @@ class IMOSBaseCheck(BaseNCCheck):
         if 'LATITUDE' in dataset.variables:
             latitude_var = dataset.variables['LATITUDE']
 
-            result = Result(BaseCheck.MEDIUM, True, name=('var', 'LATITUDE'))
+            result = Result(BaseCheck.MEDIUM, True, name='LATITUDE')
             if latitude_var.dtype not in [np.float16, np.float32, np.float64, np.float128]:
                 result.value = False
-                result.msgs = ["The LATITUDE variable should be of type double or float"]
+                result.msgs = ["The LATITUDE variable should be of type double or float."]
             ret_val.append(result)
 
             ret_val.extend(
@@ -711,19 +709,18 @@ class IMOSBaseCheck(BaseNCCheck):
                 continue
 
             n_vertical_var += 1
-            result_name_std = ('var', name, 'standard_name', 'vertical')
-            result_name_pos = ('var', name, 'positive', 'vertical')
+            result_name = name
             if var_type == 'unknown':
                 # we only get this if var has axis='Z' but no valid
                 # standard_name or positive attribute
-                result = Result(BaseCheck.HIGH, False, result_name_std,
-                                ["Vertical coordinate variable (axis='Z') should have attribute"
-                                 " standard_name = 'depth' or 'height'"]
+                result = Result(BaseCheck.HIGH, False, result_name,
+                                ["Vertical coordinate variable (axis=\"Z\") should have attribute"
+                                 " 'standard_name' = \"depth\" or \"height\"."]
                                 )
                 ret_val.append(result)
-                result = Result(BaseCheck.HIGH, False, result_name_pos,
-                                ["Vertical coordinate variable (axis='Z') should have attribute"
-                                 " positive = 'up' or 'down'"]
+                result = Result(BaseCheck.HIGH, False, result_name,
+                                ["Vertical coordinate variable (axis=\"Z\") should have attribute"
+                                 " 'positive' = \"up\" or \"down\"."]
                                 )
                 ret_val.append(result)
 
@@ -737,19 +734,18 @@ class IMOSBaseCheck(BaseNCCheck):
                 valid = getattr(var, 'standard_name', '') == var_type
                 if not valid:
                     reasoning = ["Variable %s appears to be a vertical coordinate, should have attribute"
-                                 " standard_name = '%s'" % (name, var_type)]
-                result = Result(BaseCheck.HIGH, valid, result_name_std, reasoning)
+                                 " 'standard_name' = \"%s\"." % (name, var_type)]
+                result = Result(BaseCheck.HIGH, valid, result_name, reasoning)
                 ret_val.append(result)
 
                 reasoning = []
                 valid = getattr(var, 'positive', '') == expected_positive
                 if not valid:
                     reasoning = ["Variable %s appears to be a vertical coordinate, should have attribute"
-                                 " positive = '%s'" % (name, expected_positive)]
-                result = Result(BaseCheck.HIGH, valid, result_name_pos, reasoning)
+                                 " 'positive' = \"%s\"." % (name, expected_positive)]
+                result = Result(BaseCheck.HIGH, valid, result_name, reasoning)
                 ret_val.append(result)
 
-            result_name = ('var', name, 'reference_datum', 'type')
             result = check_attribute_type((name, 'reference_datum'),
                                           basestring,
                                           dataset,
@@ -758,7 +754,6 @@ class IMOSBaseCheck(BaseNCCheck):
                                           BaseCheck.HIGH)
             ret_val.append(result)
 
-            result_name = ('var', name, 'valid_min', 'present')
             result = check_present((name, 'valid_min'),
                                    dataset,
                                    self.CHECK_VARIABLE_ATTRIBUTE,
@@ -766,7 +761,6 @@ class IMOSBaseCheck(BaseNCCheck):
                                    BaseCheck.HIGH)
             ret_val.append(result)
 
-            result_name = ('var', name, 'valid_max', 'present')
             result = check_present((name, 'valid_max'),
                                    dataset,
                                    self.CHECK_VARIABLE_ATTRIBUTE,
@@ -774,14 +768,13 @@ class IMOSBaseCheck(BaseNCCheck):
                                    BaseCheck.HIGH)
             ret_val.append(result)
 
-            result_name = ('var', name, 'axis', 'vertical')
             axis = getattr(var, 'axis', '')
             if axis and axis == 'Z':
                 result = Result(BaseCheck.HIGH, True, result_name, None)
                 ret_val.append(result)
             else:
                 reasoning = ["Variable %s appears to be a vertical coordinate, should have attribute"
-                             " axis = 'Z'" % name]
+                             " 'axis' = \"Z\"." % name]
                 result = Result(BaseCheck.HIGH, False, result_name, reasoning)
                 if axis:
                     # axis attribute exists, incorrect value, so definitely report
@@ -790,7 +783,6 @@ class IMOSBaseCheck(BaseNCCheck):
                     # no axis attribute, which might be ok, review later
                     results_axis.append(result)
 
-            result_name = ('var', name, 'units', 'vertical')
             reasoning = ["Variable %s appears to be a vertical coordinate, should have"
                          " units of distance" % name]
             result = check_value((name, 'units',),
@@ -803,7 +795,6 @@ class IMOSBaseCheck(BaseNCCheck):
                                  reasoning)
             ret_val.append(result)
 
-            result_name = ('var', name, 'variable_type')
             reasoning = ["Variable %s should have type Double or Float" % name]
             result = check_attribute_type((name,),
                                           [np.float64, np.float, np.float32, np.float16, np.float128],
@@ -826,21 +817,18 @@ class IMOSBaseCheck(BaseNCCheck):
         """
 
         ret_val = []
-        reasoning = ["Attribute type is not same as variable type"]
         for name, var in dataset.variables.iteritems():
-            result_name = ('var', name, '_FillValue', 'check_attribute_type')
+            result_name = name
             result = check_attribute_type((name, '_FillValue',),
                                           var.datatype,
                                           dataset,
                                           self.CHECK_VARIABLE_ATTRIBUTE,
                                           result_name,
                                           BaseCheck.HIGH,
-                                          reasoning,
+                                          ["Attribute '_FillValue' should have same type as variable."],
                                           True)
             if result is not None:
                 ret_val.append(result)
-
-            result_name = ('var', name, 'valid_min', 'check_attribute_type')
 
             result = check_attribute_type((name, 'valid_min',),
                                           var.datatype,
@@ -848,19 +836,18 @@ class IMOSBaseCheck(BaseNCCheck):
                                           self.CHECK_VARIABLE_ATTRIBUTE,
                                           result_name,
                                           BaseCheck.HIGH,
-                                          reasoning,
+                                          ["Attribute 'valid_min' should have same type as variable."],
                                           True)
             if result is not None:
                 ret_val.append(result)
 
-            result_name = ('var', name, 'valid_max', 'check_attribute_type')
             result = check_attribute_type((name, 'valid_max',),
                                           var.datatype,
                                           dataset,
                                           self.CHECK_VARIABLE_ATTRIBUTE,
                                           result_name,
                                           BaseCheck.HIGH,
-                                          reasoning,
+                                          ["Attribute 'valid_max' should have same type as variable."],
                                           True)
             if result is not None:
                 ret_val.append(result)
@@ -871,9 +858,11 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         Check that there's at least one data variable exists in the file
         """
-        result_name = ('var', 'data_variable_present')
+        result_name = 'data_variable_present'
         if not self._data_variables:
-            result = Result(BaseCheck.HIGH, False, result_name, ["No data variable exists"])
+            result = Result(BaseCheck.HIGH, False, result_name,
+                            ["File should contain at least one data variable (none found)."]
+                            )
         else:
             result = Result(BaseCheck.HIGH, True, result_name, None)
 
@@ -937,11 +926,14 @@ class IMOSBaseCheck(BaseNCCheck):
                 ancillary_variables = \
                     find_ancillary_variables_by_variable(dataset, data_variable)
                 if qc_variable in ancillary_variables:
-                    result_name = ('var', 'quality_variable', qc_variable.name, data_variable.name, 'check_dimension')
+                    result_name = qc_variable.name
                     if data_variable.dimensions == qc_variable.dimensions:
                         result = Result(BaseCheck.HIGH, True, result_name, None)
                     else:
-                        reasoning = ["Dimension is not same"]
+                        reasoning = [
+                            "Quality control variable should have the same dimensions as its "
+                            "associated data variable ({data}).".format(data=data_variable.name)
+                        ]
                         result = Result(BaseCheck.HIGH, False, result_name, reasoning)
 
                     ret_val.append(result)
@@ -956,12 +948,15 @@ class IMOSBaseCheck(BaseNCCheck):
         ret_val = []
 
         for quality_var in self._quality_control_variables:
-            result_name = ('var', 'quality_variable', quality_var.name, 'check_listed')
+            result_name = quality_var.name
 
             if quality_var in self._ancillary_variables:
                 result = Result(BaseCheck.MEDIUM, True, result_name, None)
             else:
-                reasoning = ["Quality variable is not listed in any data"" variable's ancillary_variables attribute"]
+                reasoning = [
+                    "Quality control variable is not listed in any data variable's "
+                    "'ancillary_variables' attribute."
+                ]
                 result = Result(BaseCheck.MEDIUM, False, result_name, reasoning)
 
             ret_val.append(result)
@@ -980,11 +975,13 @@ class IMOSBaseCheck(BaseNCCheck):
                     ds, variable)
                 if qc_variable in ancillary_variables:
                     value = getattr(variable, 'standard_name', '')
-                    result_name = ('var', 'quality_variable', qc_variable.name, variable.name, 'check_standard_name')
+                    result_name = qc_variable.name
                     if value:
                         value = value + ' ' + 'status_flag'
                         if getattr(qc_variable, 'standard_name', '') != value:
-                            reasoning = ["Standard name should be '%s'." % value]
+                            reasoning = [
+                                "Attribute 'standard_name' should be \"%s\"." % value
+                            ]
                             result = Result(BaseCheck.HIGH, False, result_name, reasoning)
                         else:
                             result = Result(BaseCheck.HIGH, True, result_name, None)
@@ -996,12 +993,12 @@ class IMOSBaseCheck(BaseNCCheck):
 
     def check_geospatial_vertical_units(self, dataset):
         """
-        Check value of lgeospatial_vertical_units global attribute is valid CF depth
+        Check value of geospatial_vertical_units global attribute is valid CF depth
         unit, if exists
         """
         ret_val = []
-        result_name = ('var', 'geospatial_vertical_units', 'check_attributes')
-        reasoning = ["units is not a valid CF depth unit"]
+        result_name = 'geospatial_vertical_units'
+        reasoning = ["Global attribute 'geospatial_vertical_units' should be a valid CF depth unit."]
 
         result = check_value(('geospatial_vertical_units',),
                              'meter',
@@ -1079,8 +1076,8 @@ class IMOS1_3Check(IMOSBaseCheck):
         reasoning = None
         if acknowledgement is None:
             present = False
-            reasoning = ['Missing global attribute acknowledgement']
-        result_name = ('globalattr', 'acknowledgement', 'present')
+            reasoning = ['Missing global attribute acknowledgement.']
+        result_name = 'acknowledgement'
         result = Result(BaseCheck.HIGH, present, result_name, reasoning)
 
         ret_val.append(result)
@@ -1091,12 +1088,11 @@ class IMOS1_3Check(IMOSBaseCheck):
 
         # test whether old or new substrings match the attribute value
         passed = False
-        reasoning = ["acknowledgement string doesn't contain the required text"]
+        reasoning = ["acknowledgement string doesn't contain the required text."]
         if re.match(old_pattern, acknowledgement) or \
                 re.match(new_pattern, acknowledgement):
             passed = True
             reasoning = None
-        result_name = ('globalattr', 'acknowledgement', 'value')
         result = Result(BaseCheck.HIGH, passed, result_name, reasoning)
 
         ret_val.append(result)
@@ -1240,7 +1236,7 @@ class IMOS1_4Check(IMOSBaseCheck):
             if not hasattr(var, '_FillValue'):
                 continue
 
-            result = Result(BaseCheck.LOW, True, ('recommended', name, '_FillValue'))
+            result = Result(BaseCheck.LOW, True, name)
             if is_numeric(type(var._FillValue)) and np.isnan(var._FillValue):
                 result.value = False
                 result.msgs = [
@@ -1258,7 +1254,7 @@ class IMOS1_4Check(IMOSBaseCheck):
         """
         ret_val = []
         for var in self._coordinate_variables:
-            result = Result(BaseCheck.HIGH, True, ('var', var.name, 'no _FillValue'))
+            result = Result(BaseCheck.HIGH, True, var.name)
             if hasattr(var, '_FillValue'):
                 result.value = False
                 result.msgs = [

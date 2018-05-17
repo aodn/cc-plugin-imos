@@ -14,12 +14,17 @@ variables:
 		DEPTH:positive = "up" ;
 		DEPTH:reference_datum = 123 ;
 		DEPTH:units = "dbar" ;
+		DEPTH:valid_min = 0 ;
+		DEPTH:valid_max = 1000 ;
 	float VERTICAL(time) ;
 		VERTICAL:positive = "up" ;
 		VERTICAL:_FillValue = -999. ;
+		VERTICAL:valid_min = 0 ;
+		VERTICAL:valid_max = 1000 ;
 	double HHH ;
 		HHH:axis = "Z" ;
 		HHH:reference_datum = "ground" ;
+		HHH:units = "m" ;
 	int LATITUDE ;
 		LATITUDE:standard_name = "" ;
 		LATITUDE:axis = "" ;
