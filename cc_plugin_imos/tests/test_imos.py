@@ -851,16 +851,6 @@ class TestIMOS1_4(TestIMOS1_3):
         self.assertEqual(len(failed_var), 4)
         self.assertEqual(set(failed_var), {'data_variable', 'random_data'})
 
-    @unittest.skipUnless(netCDF4.__netcdf4libversion__ >= '4.3',
-                         'requires netCDF4 library version >= 4.3')
-    def test_check_fill_value(self):
-        ret_val = self.imos.check_fill_value(self.bad_coords_dataset)
-        self.assertEqual(len(ret_val), 4)
-        passed_var = [r.name for r in ret_val if r.value]
-        failed_var = [r.name for r in ret_val if not r.value]
-        self.assertEqual(set(passed_var), {'TIME', 'DATA_CODE', 'VERTICAL'})
-        self.assertEqual(failed_var, ['time'])
-
     def test_check_coordinate_variable_no_fill_value(self):
         self.imos.setup(self.new_dataset)
         ret_val = self.imos.check_coordinate_variable_no_fill_value(self.new_dataset)

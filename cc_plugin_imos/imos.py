@@ -1228,27 +1228,6 @@ class IMOS1_4Check(IMOSBaseCheck):
 
         return ret_val
 
-    def check_fill_value(self, dataset):
-        """
-        For every variable that has a _FillValue attribute, check that its
-        value is not NaN.
-
-        """
-        ret_val = []
-        for name, var in dataset.variables.iteritems():
-            if not hasattr(var, '_FillValue'):
-                continue
-
-            result = Result(BaseCheck.LOW, True, name)
-            if is_numeric(type(var._FillValue)) and np.isnan(var._FillValue):
-                result.value = False
-                result.msgs = [
-                    "We recommend that _FillValue attribures be set to a real numeric value, not NaN"
-                ]
-            ret_val.append(result)
-
-        return ret_val
-
     def check_coordinate_variable_no_fill_value(self, dataset):
         """
         Check that coordinate variables do NOT have a _FillValue attribute
