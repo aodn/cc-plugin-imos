@@ -1239,7 +1239,7 @@ class IMOS1_4Check(IMOSBaseCheck):
             if not hasattr(var, '_FillValue'):
                 continue
 
-            result = Result(BaseCheck.LOW, True, name)
+            result = Result(BaseCheck.LOW, True, name+':_FillValue')
             if is_numeric(type(var._FillValue)) and np.isnan(var._FillValue):
                 result.value = False
                 result.msgs = [
