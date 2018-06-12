@@ -146,13 +146,6 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
         self.assertEqual(len(failed_var), 2)
         self.assertEqual(set(failed_var), {'random_var'})
 
-    @unittest.skipUnless(netCDF4.__netcdf4libversion__ >= '4.3',
-                         'requires netCDF4 library version >= 4.3')
-    def test_check_fill_value(self):
-        ret_val = self.srs.check_fill_value(self.srs_bad_dataset)
-        failed_var = [r.name for r in ret_val if not r.value]
-        self.assertEqual(failed_var, ['lon'])
-
     def test_check_mandatory_variables_exist(self):
         self.srs.setup(self.srs_good_dataset)
         ret_val = self.srs.check_mandatory_variables_exist(self.srs_good_dataset)
