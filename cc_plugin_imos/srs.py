@@ -153,14 +153,6 @@ class IMOSGHRSSTCheck(BaseNCCheck):
         """
         return self.imos_1_4_check.check_data_variables(dataset)
 
-    def check_fill_value(self, dataset):
-        """
-        For every variable that has a _FillValue attribute, check that its
-        value is not NaN.
-
-        """
-        return self.imos_1_4_check.check_fill_value(dataset)
-
     def check_mandatory_variables_exist(self, dataset):
         """
         Check that a list of variables exists defined by self.mandatory_variables
