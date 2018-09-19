@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
 from cc_plugin_imos.imos import IMOS1_3Check, IMOS1_4Check
 from cc_plugin_imos import util
 from netCDF4 import Dataset
@@ -11,6 +12,8 @@ import numpy as np
 import os
 import shutil
 import netCDF4
+import six
+from six.moves import zip
 
 
 class MockVariable(object):
@@ -20,7 +23,7 @@ class MockVariable(object):
 
     def __init__(self, name='', **argd):
         self.name = name
-        for k, v in argd.iteritems():
+        for k, v in six.iteritems(argd):
             self.__dict__[k] = v
 
 
@@ -252,7 +255,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(result.msgs, reasoning)
 
     def test_check_attribute_type(self):
-        result = util.check_attribute_type(('idontexist',), basestring,
+        result = util.check_attribute_type(('idontexist',), six.string_types,
                                            self.good_dataset,
                                            util.CHECK_GLOBAL_ATTRIBUTE,
                                            'name', 1, skip_check_present=True)
@@ -264,7 +267,7 @@ class TestUtils(unittest.TestCase):
                                            'name', 1)
         self.assertFalse(result.value)
 
-        self._test_check_attribute_type_generic(('title',), basestring, int,
+        self._test_check_attribute_type_generic(('title',), six.string_types, int,
                                                 self.good_dataset,
                                                 util.CHECK_GLOBAL_ATTRIBUTE,
                                                 reasoning=['title not string'])
@@ -545,7 +548,7 @@ class TestIMOS1_3(unittest.TestCase):
         failed = {r.name: r.msgs for r in ret_val if not r.value}
         for v in coord_vars:
             self.assertIn("Coordinate variable values should be monotonic.", failed[v])
-        self.assertIn('Coordinate variables', failed.keys())
+        self.assertIn('Coordinate variables', list(failed.keys()))
 
     def test_check_time_variable(self):
         ret_val = self.imos.check_time_variable(self.good_dataset)
