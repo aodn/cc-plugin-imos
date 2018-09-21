@@ -466,8 +466,8 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
     `expected` determines what is checked. If expected is
     * Null, check for presence of attribute and ensure is not an empty
       string (after stripping whitespace).
-    * An iterable - check that attribute has one of the values in the iterable
-    * A type - check that attribute is of the given type.
+    * A list - check that attribute has one of the values in the list.
+    * A type or tuple of types - check that attribute has one of the given types.
     * A function - called with the attribute value as argument, should return a tuple
       (result_value, message). The name of the attribute will be prepended to the message.
     * A string - assumed to be a regular expression that the attribute must match.
@@ -512,7 +512,7 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         except AttributeError:
             result.value = True
 
-    elif hasattr(expected, '__iter__'):
+    elif isinstance(expected, list):
         if value in expected:
             result.value = True
         else:
@@ -526,15 +526,20 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
 
             result.msgs.append(msg)
 
-    elif isinstance(expected, type):
+    elif isinstance(expected, type) or (isinstance(expected, tuple) and all(isinstance(e, type) for e in expected)):
         if isinstance(value, expected):
             result.value = True
         else:
             result.value = False
-            result.msgs.append(
-                '%s should be of %s.' % (message_name, str(expected).strip('<>'))
-                # str(expected) looks like "<type 'float'>"
-            )
+            if isinstance(expected, type) or len(expected) == 1:
+                msg = '{name} should have {type}.'.format(name=message_name, type=str(expected).strip('(<>,)'))
+            else:
+                msg = '{name} should have one of the types {types}'.format(
+                    name=message_name,
+                    types=str(expected).replace('<type ', '').replace('>', '')
+                )
+
+            result.msgs.append(msg)
 
     elif hasattr(expected, '__call__'):
         result.value, message = expected(value)

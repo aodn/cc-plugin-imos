@@ -498,16 +498,7 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
         for name, var in six.iteritems(dataset.variables):
-            result_name = name
-            reasoning = ["Attribute 'long_name' should be a string."]
-
-            result = check_attribute_type((name, 'long_name',),
-                                          six.string_types,
-                                          dataset,
-                                          self.CHECK_VARIABLE_ATTRIBUTE,
-                                          result_name,
-                                          BaseCheck.HIGH,
-                                          reasoning)
+            result = check_attribute('long_name', six.string_types, var)
             ret_val.append(result)
 
         return ret_val
@@ -749,12 +740,7 @@ class IMOSBaseCheck(BaseNCCheck):
                 result = Result(BaseCheck.HIGH, valid, result_name, reasoning)
                 ret_val.append(result)
 
-            result = check_attribute_type((name, 'reference_datum'),
-                                          six.string_types,
-                                          dataset,
-                                          self.CHECK_VARIABLE_ATTRIBUTE,
-                                          result_name,
-                                          BaseCheck.HIGH)
+            result = check_attribute('reference_datum', six.string_types, var)
             ret_val.append(result)
 
             result = check_present((name, 'valid_min'),

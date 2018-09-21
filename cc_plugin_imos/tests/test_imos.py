@@ -613,7 +613,7 @@ class TestIMOS1_3(unittest.TestCase):
                       "should have type Double or Float"
                       ],
             'VERTICAL': ["should have attribute.*standard_name.*height",
-                         "reference_datum not present",
+                         "'reference_datum' missing",
                          "units not present"
                          ],
             'HHH': ["should have attribute.*standard_name.*depth.*height",
@@ -921,7 +921,7 @@ class TestIMOS1_4(TestIMOS1_3):
         expected_res = [
             ('LONGITUDE_quality_control', "Attribute 'quality_control_global' missing."),
             ('bad1_quality_control', "Attribute 'quality_control_global_conventions' missing."),
-            ('bad2_qc', "Attribute 'quality_control_global' should be of type 'basestring'."),
+            ('bad2_qc', "Attribute 'quality_control_global' should have type 'basestring'."),
             ('bad2_qc', "Attribute 'quality_control_global_conventions' missing.")
         ]
         self.assertListEqual(expected_res, failed_res)
