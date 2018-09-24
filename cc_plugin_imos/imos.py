@@ -5,9 +5,13 @@ http://www.imos.org.au/
 """
 
 from __future__ import absolute_import
+
 import numpy as np
 import re
 from datetime import datetime
+import six
+from six.moves import range
+
 from cf_units import date2num, num2date
 
 from compliance_checker.cf.util import find_coord_vars, _possibleaxis, _possibleaxisunits
@@ -27,8 +31,6 @@ from cc_plugin_imos.util import check_attribute_type
 from cc_plugin_imos.util import vertical_coordinate_type
 from cc_plugin_imos.util import check_attribute, check_attribute_dict, get_masked_array
 from cc_plugin_imos import __version__
-import six
-from six.moves import range
 
 
 ################################################################################

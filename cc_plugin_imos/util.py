@@ -456,6 +456,30 @@ def check_attribute_type(name, expected_type, ds, check_type, result_name, check
     return result
 
 
+def type_names(types):
+    """
+    Return a string listing in plain English the given type(s). For use in result messages.
+    e.g. (<class 'str'>,) => "string"
+         (<class 'numpy.float32'>, <class 'numpy.float64'>) => "float32 or float64"
+
+    :param types: type or tuple of types
+    :return: string describint simple
+    """
+    types = types if hasattr(types, '__iter__') else (types,)
+    type_set = set()
+    for t in types:
+        if t in six.string_types:
+            type_set.add("string")
+            continue
+        m = re.match(r"<(type|class) '(numpy.)?(.+)'>", str(t))
+        if m:
+            type_set.add(m[-1])
+        else:
+            type_set.add(str(t))
+
+    return " or ".join(type_set)
+
+
 def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=None, optional=False):
     """
     Basic attribute checks.
@@ -526,20 +550,15 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
 
             result.msgs.append(msg)
 
-    elif isinstance(expected, type) or (isinstance(expected, tuple) and all(isinstance(e, type) for e in expected)):
+    elif isinstance(expected, type) or \
+            (isinstance(expected, tuple) and all(isinstance(e, type) for e in expected)):
         if isinstance(value, expected):
             result.value = True
         else:
             result.value = False
-            if isinstance(expected, type) or len(expected) == 1:
-                msg = '{name} should have {type}.'.format(name=message_name, type=str(expected).strip('(<>,)'))
-            else:
-                msg = '{name} should have one of the types {types}'.format(
-                    name=message_name,
-                    types=str(expected).replace('<type ', '').replace('>', '')
-                )
-
-            result.msgs.append(msg)
+            result.msgs.append(
+                '{name} should have type {type}.'.format(name=message_name, type=type_names(expected))
+            )
 
     elif hasattr(expected, '__call__'):
         result.value, message = expected(value)

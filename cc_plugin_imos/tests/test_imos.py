@@ -607,7 +607,7 @@ class TestIMOS1_3(unittest.TestCase):
         expected = {
             'DEPTH': ["should have attribute.*standard_name.*depth",
                       "should have attribute.*positive.*down",
-                      "should have type.*string",
+                      "should have type string",
                       "should have attribute.*axis.*Z",
                       "should have units of distance",
                       "should have type Double or Float"
@@ -876,7 +876,7 @@ class TestIMOS1_4(TestIMOS1_3):
 
         ret_val = self.imos.check_time_variable(self.bad_coords_dataset)
         ret_msgs = [r.msgs[0] for r in ret_val]
-        expected_msgs = [
+        expected_msgs = {
             "The TIME variable should be of type double (64-bit).",
             "Attribute 'valid_min' missing.",
             "Attribute 'standard_name' should be set to \"time\".",
@@ -884,8 +884,8 @@ class TestIMOS1_4(TestIMOS1_3):
             "Attribute 'calendar' should be set to \"gregorian\".",
             "Attribute 'axis' missing.",
             "Attribute 'units' does't match expected pattern \".*UTC\"."
-        ]
-        self.assertListEqual(ret_msgs, expected_msgs)
+        }
+        self.assertEqual(expected_msgs, set(ret_msgs))
 
         ret_val = self.imos.check_time_variable(self.missing_dataset)
         self.assertEqual(len(ret_val), 0)
@@ -921,7 +921,7 @@ class TestIMOS1_4(TestIMOS1_3):
         expected_res = [
             ('LONGITUDE_quality_control', "Attribute 'quality_control_global' missing."),
             ('bad1_quality_control', "Attribute 'quality_control_global_conventions' missing."),
-            ('bad2_qc', "Attribute 'quality_control_global' should have type 'basestring'."),
+            ('bad2_qc', "Attribute 'quality_control_global' should have type string."),
             ('bad2_qc', "Attribute 'quality_control_global_conventions' missing.")
         ]
         self.assertListEqual(expected_res, failed_res)
