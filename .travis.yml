@@ -4,6 +4,7 @@ sudo: false
 
 python:
   - "2.7"
+  - "3.5"
 
 before_install:
   - wget http://bit.ly/miniconda -O miniconda.sh
