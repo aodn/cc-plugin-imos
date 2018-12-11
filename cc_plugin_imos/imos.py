@@ -4,9 +4,14 @@ Compliance Test Suite for the Integrated Marine Observing System
 http://www.imos.org.au/
 """
 
+from __future__ import absolute_import
+
 import numpy as np
 import re
 from datetime import datetime
+import six
+from six.moves import range
+
 from cf_units import date2num, num2date
 
 from compliance_checker.cf.util import find_coord_vars, _possibleaxis, _possibleaxisunits
@@ -70,11 +75,11 @@ class IMOSBaseCheck(BaseNCCheck):
             'project': ['Integrated Marine Observing System (IMOS)'],
             'naming_authority': ['IMOS'],
             'date_created': is_timestamp,
-            'title': basestring,
-            'abstract': basestring,
-            'author': basestring,
-            'principal_investigator': basestring,
-            'citation': basestring,
+            'title': six.string_types,
+            'abstract': six.string_types,
+            'author': six.string_types,
+            'principal_investigator': six.string_types,
+            'citation': six.string_types,
         }
 
         self.optional_global_attributes = {
@@ -130,7 +135,7 @@ class IMOSBaseCheck(BaseNCCheck):
         result_name = name
         reasoning = ["Attribute type is not string."]
         result = check_attribute_type((name,),
-                                      basestring,
+                                      six.string_types,
                                       dataset,
                                       self.CHECK_GLOBAL_ATTRIBUTE,
                                       result_name,
@@ -163,7 +168,7 @@ class IMOSBaseCheck(BaseNCCheck):
 
         for name in dataset.ncattrs():
             attribute_value = getattr(dataset, name)
-            if isinstance(attribute_value, basestring):
+            if isinstance(attribute_value, six.string_types):
                 result_name = name
                 reasoning = None
                 if not attribute_value:
@@ -181,11 +186,11 @@ class IMOSBaseCheck(BaseNCCheck):
         """
         ret_val = []
 
-        for variable_name, variable in dataset.variables.iteritems():
+        for variable_name, variable in six.iteritems(dataset.variables):
             for attribute_name in variable.ncattrs():
                 attribute_value = getattr(variable, attribute_name)
 
-                if isinstance(attribute_value, basestring):
+                if isinstance(attribute_value, six.string_types):
                     result_name = variable_name
                     reasoning = None
                     if not attribute_value:
@@ -324,7 +329,7 @@ class IMOSBaseCheck(BaseNCCheck):
         """
 
         # identify vertical vars
-        vert_vars = [v for v in dataset.variables.itervalues()
+        vert_vars = [v for v in six.itervalues(dataset.variables)
                      if vertical_coordinate_type(dataset, v) is not None]
 
         vert_min = getattr(dataset, 'geospatial_vertical_min', None)
@@ -386,8 +391,8 @@ class IMOSBaseCheck(BaseNCCheck):
             obs_mins[var.name] = np.min(vertical_positive_sign * values)
             obs_maxs[var.name] = np.max(vertical_positive_sign * values)
 
-        min_pass = any((np.isclose(vert_min, min_val) for min_val in obs_mins.itervalues()))
-        max_pass = any((np.isclose(vert_max, max_val) for max_val in obs_maxs.itervalues()))
+        min_pass = any((np.isclose(vert_min, min_val) for min_val in six.itervalues(obs_mins)))
+        max_pass = any((np.isclose(vert_max, max_val) for max_val in six.itervalues(obs_maxs)))
 
         reasoning = []
         if not min_pass:
@@ -494,17 +499,8 @@ class IMOSBaseCheck(BaseNCCheck):
         Check the every variable long name attribute and ensure it is string type.
         """
         ret_val = []
-        for name, var in dataset.variables.iteritems():
-            result_name = name
-            reasoning = ["Attribute 'long_name' should be a string."]
-
-            result = check_attribute_type((name, 'long_name',),
-                                          basestring,
-                                          dataset,
-                                          self.CHECK_VARIABLE_ATTRIBUTE,
-                                          result_name,
-                                          BaseCheck.HIGH,
-                                          reasoning)
+        for name, var in six.iteritems(dataset.variables):
+            result = check_attribute('long_name', six.string_types, var)
             ret_val.append(result)
 
         return ret_val
@@ -609,7 +605,7 @@ class IMOSBaseCheck(BaseNCCheck):
             'axis': ['X'],
             'valid_min': None,
             'valid_max': None,
-            'reference_datum': basestring,
+            'reference_datum': six.string_types,
         }
 
         longitude_units = ['degrees_east']
@@ -660,7 +656,7 @@ class IMOSBaseCheck(BaseNCCheck):
             'axis': ['Y'],
             'valid_min': [-90],
             'valid_max': [90],
-            'reference_datum': basestring,
+            'reference_datum': six.string_types,
         }
         latitude_units = ['degrees_north']
 
@@ -702,7 +698,7 @@ class IMOSBaseCheck(BaseNCCheck):
         results_axis = []
         n_vertical_var = 0
 
-        for name, var in dataset.variables.iteritems():
+        for name, var in six.iteritems(dataset.variables):
             var_type = vertical_coordinate_type(dataset, var)
             if var_type is None:
                 # not a vertical variable
@@ -746,12 +742,7 @@ class IMOSBaseCheck(BaseNCCheck):
                 result = Result(BaseCheck.HIGH, valid, result_name, reasoning)
                 ret_val.append(result)
 
-            result = check_attribute_type((name, 'reference_datum'),
-                                          basestring,
-                                          dataset,
-                                          self.CHECK_VARIABLE_ATTRIBUTE,
-                                          result_name,
-                                          BaseCheck.HIGH)
+            result = check_attribute('reference_datum', six.string_types, var)
             ret_val.append(result)
 
             result = check_present((name, 'valid_min'),
@@ -817,7 +808,7 @@ class IMOSBaseCheck(BaseNCCheck):
         """
 
         ret_val = []
-        for name, var in dataset.variables.iteritems():
+        for name, var in six.iteritems(dataset.variables):
             result_name = name
             result = check_attribute_type((name, '_FillValue',),
                                           var.datatype,
@@ -909,7 +900,7 @@ class IMOSBaseCheck(BaseNCCheck):
                 "QC variable '{qc}'.".format(data=qc_variable_root_name, qc=qc_variable.name)
             ]
             match = False
-            if qc_variable_root_name in dataset.variables.keys():
+            if qc_variable_root_name in list(dataset.variables.keys()):
                 reasoning = []
                 match = True
 
@@ -1165,7 +1156,7 @@ class IMOS1_4Check(IMOSBaseCheck):
         ret_val = []
 
         # identify vertical vars
-        vert_vars = [v for v in dataset.variables.itervalues()
+        vert_vars = [v for v in six.itervalues(dataset.variables)
                      if vertical_coordinate_type(dataset, v) is not None]
 
         vert_min = getattr(dataset, 'geospatial_vertical_min', None)
@@ -1192,7 +1183,7 @@ class IMOS1_4Check(IMOSBaseCheck):
                            'sea bottom',
                            'sensor']
 
-        for name, var in dataset.variables.iteritems():
+        for name, var in six.iteritems(dataset.variables):
             var_type = vertical_coordinate_type(dataset, var)
             if var_type is None:
                 # not a vertical variable
@@ -1262,11 +1253,11 @@ class IMOS1_4Check(IMOSBaseCheck):
                 continue
 
             ret_val.append(
-                check_attribute('quality_control_global', basestring,
+                check_attribute('quality_control_global', six.string_types,
                                 var, priority=BaseCheck.MEDIUM)
             )
             ret_val.append(
-                check_attribute('quality_control_global_conventions', basestring,
+                check_attribute('quality_control_global_conventions', six.string_types,
                                 var, priority=BaseCheck.MEDIUM)
             )
 

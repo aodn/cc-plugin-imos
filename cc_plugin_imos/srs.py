@@ -4,6 +4,7 @@ Compliance Test Suite for SRS IMOS NetCDF Files
 http://www.imos.org.au/
 """
 
+from __future__ import absolute_import
 import numpy as np
 
 from cc_plugin_imos import __version__
@@ -11,6 +12,7 @@ from cc_plugin_imos.imos import IMOS1_3Check, IMOS1_4Check
 from cc_plugin_imos.util import (check_attribute, check_attribute_dict,
                                  is_timestamp)
 from compliance_checker.base import BaseCheck, BaseNCCheck, Result
+import six
 
 
 ################################################################################
@@ -41,7 +43,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
         self.mandatory_global_attributes = {
             'project': ['Group for High Resolution Sea Surface Temperature'],
             'date_created': is_timestamp,
-            'title': basestring
+            'title': six.string_types
         }
 
         self.mandatory_variables = [
@@ -161,7 +163,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
 
         for mandatory_var in self.mandatory_variables:
             result_name = mandatory_var
-            if mandatory_var in dataset.variables.keys():
+            if mandatory_var in list(dataset.variables.keys()):
                 reasoning = None
             else:
                 reasoning = ["Mandatory variable '%s' does not exist." % mandatory_var]

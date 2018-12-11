@@ -1,8 +1,10 @@
 from __future__ import with_statement
 
+from __future__ import absolute_import
 from setuptools import find_packages, setup
 
 from cc_plugin_imos import __version__
+from io import open
 
 
 def readme():

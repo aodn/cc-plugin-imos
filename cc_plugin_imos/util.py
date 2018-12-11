@@ -1,5 +1,6 @@
 """ Provide helper methods for IMOSChecker class
 """
+from __future__ import absolute_import
 import datetime
 
 import numpy as np
@@ -10,6 +11,7 @@ from netCDF4 import Dataset
 from compliance_checker.base import BaseCheck
 from compliance_checker.base import Result
 from compliance_checker.cf.util import units_convertible
+import six
 
 CHECK_VARIABLE = 1
 CHECK_GLOBAL_ATTRIBUTE = 0
@@ -50,7 +52,7 @@ def is_timestamp(value):
     message if false. For use with check_attribute()
 
     """
-    if not isinstance(value, basestring):
+    if not isinstance(value, six.string_types):
         return False, "should be a timestamp string."
 
     try:
@@ -153,7 +155,7 @@ def find_auxiliary_coordinate_variables(dataset):
     """
     auxiliary_coordinate_variables = []
 
-    for name, var in dataset.variables.iteritems():
+    for name, var in six.iteritems(dataset.variables):
         auxiliary_coordinate_variables.extend(find_variables_from_attribute(dataset, var, 'coordinates'))
 
     return auxiliary_coordinate_variables
@@ -170,7 +172,7 @@ def find_ancillary_variables(dataset):
     """
     ancillary_variables = []
 
-    for name, var in dataset.variables.iteritems():
+    for name, var in six.iteritems(dataset.variables):
         ancillary_variables.extend(find_variables_from_attribute(dataset, var, 'ancillary_variables'))
 
     return ancillary_variables
@@ -193,7 +195,7 @@ def find_data_variables(dataset, coordinate_variables, ancillary_variables):
     data_variables = []
     auxiliary_coordinate_variables = find_auxiliary_coordinate_variables(dataset)
 
-    for name, var in dataset.variables.iteritems():
+    for name, var in six.iteritems(dataset.variables):
         if var not in coordinate_variables and var not in \
                 ancillary_variables and var.dimensions and var not in \
                 auxiliary_coordinate_variables \
@@ -209,7 +211,7 @@ def find_quality_control_variables(dataset):
     """
     quality_control_variables = []
 
-    for name, var in dataset.variables.iteritems():
+    for name, var in six.iteritems(dataset.variables):
         if name.endswith('_quality_control'):
             quality_control_variables.append(var)
             continue
@@ -220,7 +222,7 @@ def find_quality_control_variables(dataset):
             continue
 
         long_name = getattr(var, 'long_name', None)
-        if long_name is not None and isinstance(long_name, basestring):
+        if long_name is not None and isinstance(long_name, six.string_types):
             if 'status_flag' in long_name or 'quality flag' in long_name:
                 quality_control_variables.append(var)
                 continue
@@ -454,6 +456,30 @@ def check_attribute_type(name, expected_type, ds, check_type, result_name, check
     return result
 
 
+def type_names(types):
+    """
+    Return a string listing in plain English the given type(s). For use in result messages.
+    e.g. (<class 'str'>,) => "string"
+         (<class 'numpy.float32'>, <class 'numpy.float64'>) => "float32 or float64"
+
+    :param types: type or tuple of types
+    :return: string describint simple
+    """
+    types = types if hasattr(types, '__iter__') else (types,)
+    type_set = set()
+    for t in types:
+        if t in six.string_types:
+            type_set.add("string")
+            continue
+        m = re.match(r"<(type|class) '(numpy.)?(.+)'>", str(t))
+        if m:
+            type_set.add(m[-1])
+        else:
+            type_set.add(str(t))
+
+    return " or ".join(type_set)
+
+
 def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=None, optional=False):
     """
     Basic attribute checks.
@@ -464,8 +490,8 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
     `expected` determines what is checked. If expected is
     * Null, check for presence of attribute and ensure is not an empty
       string (after stripping whitespace).
-    * An iterable - check that attribute has one of the values in the iterable
-    * A type - check that attribute is of the given type.
+    * A list - check that attribute has one of the values in the list.
+    * A type or tuple of types - check that attribute has one of the given types.
     * A function - called with the attribute value as argument, should return a tuple
       (result_value, message). The name of the attribute will be prepended to the message.
     * A string - assumed to be a regular expression that the attribute must match.
@@ -510,28 +536,28 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         except AttributeError:
             result.value = True
 
-    elif hasattr(expected, '__iter__'):
+    elif isinstance(expected, list):
         if value in expected:
             result.value = True
         else:
             result.value = False
             if len(expected) > 1:
                 msg = "{name} should be one of {exp}.".format(name=message_name, exp=expected)
-            elif isinstance(expected[0], basestring):
+            elif isinstance(expected[0], six.string_types):
                 msg = "{name} should be set to \"{exp}\".".format(name=message_name, exp=expected[0])
             else:
                 msg = "{name} should be set to {exp}.".format(name=message_name, exp=expected[0])
 
             result.msgs.append(msg)
 
-    elif isinstance(expected, type):
+    elif isinstance(expected, type) or \
+            (isinstance(expected, tuple) and all(isinstance(e, type) for e in expected)):
         if isinstance(value, expected):
             result.value = True
         else:
             result.value = False
             result.msgs.append(
-                '%s should be of %s.' % (message_name, str(expected).strip('<>'))
-                # str(expected) looks like "<type 'float'>"
+                '{name} should have type {type}.'.format(name=message_name, type=type_names(expected))
             )
 
     elif hasattr(expected, '__call__'):
@@ -539,8 +565,8 @@ def check_attribute(name, expected, ds, priority=BaseCheck.HIGH, result_name=Non
         if not result.value and message:
             result.msgs.append('%s %s.' % (message_name, message))
 
-    elif isinstance(expected, basestring):
-        if not isinstance(value, basestring):
+    elif isinstance(expected, six.string_types):
+        if not isinstance(value, six.string_types):
             result.value = False
             result.msgs.append('%s should be a string.' % message_name)
         elif re.match(expected, value):
@@ -564,7 +590,7 @@ def check_attribute_dict(att_dict, ds, priority=BaseCheck.HIGH, optional=False):
 
     """
     ret_val = []
-    for name, expected in att_dict.iteritems():
+    for name, expected in six.iteritems(att_dict):
         ret_val.append(
             check_attribute(name, expected, ds, priority, optional=optional)
         )
