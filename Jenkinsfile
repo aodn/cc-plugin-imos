@@ -14,24 +14,14 @@ pipeline {
         stage('container') {
             agent {
                 dockerfile {
-                    args '-v ${HOME}/.eggs:${WORKSPACE}/.eggs'
+                    args '-v ${HOME}/.eggs:/home/builder/.eggs'
+                    additionalBuildArgs '--build-arg BUILDER_UID=${JENKINS_UID:-9999}'
                 }
             }
             environment {
-                HOME = '.'
+                HOME = '/home/builder'
             }
             stages {
-                stage('version') {
-                    steps {
-                        sh 'bumpversion patch'
-                    }
-                }
-                stage('release') {
-                    when { branch 'master' }
-                    steps {
-                        sh 'bumpversion --tag --commit release'
-                    }
-                }
                 stage('test') {
                     steps {
                         sh 'pip install --user -e .'
