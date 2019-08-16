@@ -4,13 +4,6 @@ pipeline {
     agent none
 
     stages {
-        stage('clean') {
-            agent { label 'master' }
-            steps {
-                sh 'git clean -fdx'
-            }
-        }
-
         stage('container') {
             agent {
                 dockerfile {
@@ -18,15 +11,31 @@ pipeline {
                 }
             }
             stages {
-                stage('test') {
+                stage('set_version') {
+                    when { not { branch "master" } }
                     steps {
-                        sh 'pip install --user -e .'
-                        sh 'python setup.py test'
+                        sh './bumpversion.sh build'
                     }
                 }
-                stage('package') {
+                stage('release') {
+                    when { branch 'master' }
                     steps {
-                        sh 'python setup.py bdist_wheel'
+                        withCredentials([usernamePassword(credentialsId: env.CREDENTIALS_ID, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                            sh './bumpversion.sh release'
+                        }
+                    }
+                }
+                stages {
+                    stage('test') {
+                        steps {
+                            sh 'pip install --user -e .'
+                            sh 'python setup.py test'
+                        }
+                    }
+                    stage('package') {
+                        steps {
+                            sh 'python setup.py bdist_wheel'
+                        }
                     }
                 }
             }
