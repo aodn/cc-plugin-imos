@@ -25,17 +25,15 @@ pipeline {
                         }
                     }
                 }
-                stages {
-                    stage('test') {
-                        steps {
-                            sh 'pip install --user -e .'
-                            sh 'python setup.py test'
-                        }
+                stage('test') {
+                    steps {
+                        sh 'pip install --user -e .'
+                        sh 'python setup.py test'
                     }
-                    stage('package') {
-                        steps {
-                            sh 'python setup.py bdist_wheel'
-                        }
+                }
+                stage('package') {
+                    steps {
+                        sh 'python setup.py bdist_wheel'
                     }
                 }
             }
