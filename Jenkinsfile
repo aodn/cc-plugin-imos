@@ -7,6 +7,7 @@ pipeline {
         stage('container') {
             agent {
                 dockerfile {
+                    args '-v ${HOME}/bin:${HOME}/bin'
                     additionalBuildArgs '--build-arg BUILDER_UID=${JENKINS_UID:-9999}'
                 }
             }
