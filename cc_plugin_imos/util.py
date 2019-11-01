@@ -86,7 +86,7 @@ def vertical_coordinate_type(dataset, variable):
 
     A type is returned if the variable
       * is not listed as an ancillary variable; AND
-      * does not have a standard_name equal to 'sea_floor_depth_below_sea_surface'
+      * does not have a standard_name equal to or beginning with 'sea_floor_depth'
       * does not have standard_name or long_name containing the word 'wave' (wave height is not a coordinate);
     AND meets any of the conditions:
       * variable name includes 'depth' or 'height' (case-insensitive),
@@ -104,7 +104,7 @@ def vertical_coordinate_type(dataset, variable):
 
     # skip sea-floor depth and wave height parameters
     standard_name = getattr(variable, 'standard_name', '')
-    if standard_name == 'sea_floor_depth_below_sea_surface' or 'wave' in str(standard_name):
+    if standard_name.startswith('sea_floor_depth') or 'wave' in str(standard_name):
         return None
     if 'wave' in str(getattr(variable, 'long_name', '')):
         return None
