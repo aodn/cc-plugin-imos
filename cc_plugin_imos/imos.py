@@ -1265,32 +1265,32 @@ class IMOS1_4Check(IMOSBaseCheck):
         """
         ret_val = []
 
-        old_pattern = (r"Any users( \(including re-?packagers\))? of IMOS data( \(including re-?packagers\))? "
-                       r"are required to clearly acknowledge the source of the material( derived from IMOS)? "
-                       r"in (this|the) format: \"Data was sourced from the Integrated Marine Observing System "
-                       r"\(IMOS\) - IMOS is( a national collaborative research infrastructure,)? supported by "
-                       r"the Australian Government")
-        new_pattern = (r"Any users of IMOS data are required to clearly acknowledge the source "
-                       r"of the material derived from IMOS in the format: \""
-                       r"Data was sourced from Australia's Integrated Marine Observing System "
-                       r"\(IMOS\) - IMOS is enabled by the National Collaborative Research "
-                       r"Infrastructure Strategy \(NCRIS\).\"")
+        pattern_2016 = (r"Any users( \(including re-?packagers\))? of IMOS data( \(including re-?packagers\))? "
+                        r"are required to clearly acknowledge the source of the material( derived from IMOS)? "
+                        r"in (this|the) format: \"Data was sourced from the Integrated Marine Observing System "
+                        r"\(IMOS\) - IMOS is( a national collaborative research infrastructure,)? supported by "
+                        r"the Australian Government")
+        pattern_2020 = (r"Any users of IMOS data are required to clearly acknowledge the source "
+                        r"of the material derived from IMOS in the format: \""
+                        r"Data was sourced from Australia's Integrated Marine Observing System "
+                        r"\(IMOS\) - IMOS is enabled by the National Collaborative Research "
+                        r"Infrastructure Strategy \(NCRIS\).\"")
 
         # check if the attribute matches either pattern
-        result_old = check_attribute('acknowledgement', old_pattern, dataset)
-        result_new = check_attribute('acknowledgement', new_pattern, dataset)
+        result_2016 = check_attribute('acknowledgement', pattern_2016, dataset)
+        result_2020 = check_attribute('acknowledgement', pattern_2020, dataset)
 
         # If one of them matches, the result is just True with no message
-        if result_new.value:
-            ret_val.append(result_new)
+        if result_2020.value:
+            ret_val.append(result_2020)
             return ret_val
-        if result_old.value:
-            ret_val.append(result_old)
+        if result_2016.value:
+            ret_val.append(result_2016)
             return ret_val
 
         # If neither matches, want to return the result containing the new pattern as the required text
         reasoning = ["Global attribute 'acknowledgement' doesn't contain "
-                     "the required text: {new_pattern}".format(new_pattern=new_pattern)
+                     "the required text: '{pattern}'".format(pattern=pattern_2020)
                      ]
         result = Result(BaseCheck.HIGH, False, 'acknowledgement', reasoning)
         ret_val.append(result)
