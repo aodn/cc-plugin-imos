@@ -11,7 +11,6 @@ import unittest
 import numpy as np
 import os
 import shutil
-import netCDF4
 import six
 from six.moves import zip
 
@@ -373,6 +372,7 @@ class TestIMOS1_3(unittest.TestCase):
         self.bad_coords_dataset = self.load_dataset(self.static_files['bad_coords'])
         self.new_dataset = self.load_dataset(self.static_files['new_data'])
         self.global_min_max_dataset = self.load_dataset(self.static_files['global_min_max'])
+        self.acknowledgement_2020 = self.load_dataset(self.static_files['acknowledgement_2020'])
 
     def test_check_mandatory_global_attributes(self):
         attributes = {'Conventions', 'project', 'naming_authority', 'data_centre', 'data_centre_email',
@@ -419,7 +419,7 @@ class TestIMOS1_3(unittest.TestCase):
         ret_val = self.imos.check_global_attributes(self.bad_dataset)
 
         for result in ret_val:
-            if result.name in ('date_created', 'data_centre', 'distribution_statement'):
+            if result.name in ('acknowledgement', 'date_created', 'data_centre', 'distribution_statement'):
                 self.assertTrue(result.value)
             else:
                 self.assertFalse(result.value)
@@ -485,10 +485,9 @@ class TestIMOS1_3(unittest.TestCase):
         self.assertListEqual(attributes, passed)
         failed = {r.name: r.msgs[0] for r in ret_val if not r.value}
         for a in attributes:
-            self.assertRegexpMatches(failed[a],
-                                     "{a}.*doesn't match {m}imum value".format(a=a,
-                                                                               m=a[-3:])
-                                     )
+            self.assertRegex(failed[a],
+                             "{a}.*doesn't match {m}imum value".format(a=a, m=a[-3:])
+                             )
 
         ret_val = self.imos.check_geospatial_vertical_min_max(self.missing_dataset)
         self.assertEqual(len(ret_val), 0)
@@ -628,7 +627,7 @@ class TestIMOS1_3(unittest.TestCase):
             ret_msg = [r.msgs[0] for r in ret_val if r.name == var and not r.value]
             self.assertEqual(len(ret_msg), len(expected_msg))
             for r, e in zip(ret_msg, expected_msg):
-                self.assertRegexpMatches(r, e)
+                self.assertRegex(r, e)
 
         ret_val = self.imos.check_vertical_variable(self.missing_dataset)
         self.assertEqual(len(ret_val), 0)
@@ -770,7 +769,7 @@ class TestIMOS1_4(TestIMOS1_3):
 
     def test_check_mandatory_global_attributes(self):
         attributes = {'Conventions', 'project', 'naming_authority', 'data_centre', 'data_centre_email', 'date_created',
-                      'title', 'abstract', 'author', 'principal_investigator', 'citation', 'acknowledgement',
+                      'title', 'abstract', 'author', 'principal_investigator', 'citation',
                       'disclaimer', 'license', 'standard_name_vocabulary'}
 
         att_changed = {'Conventions', 'data_centre', 'data_centre_email', 'disclaimer', 'license',
@@ -927,6 +926,12 @@ class TestIMOS1_4(TestIMOS1_3):
         self.assertListEqual(expected_res, failed_res)
 
     def test_check_acknowledgement(self):
-        # no longer have a separate method for this, covered by
-        # check_mandatory_global_attributes
-        pass
+        ret_val = self.imos.check_acknowledgement(self.old_good_dataset)
+        self.assertTrue(ret_val[0].value)
+        ret_val = self.imos.check_acknowledgement(self.new_dataset)
+        self.assertTrue(ret_val[0].value)
+        ret_val = self.imos.check_acknowledgement(self.acknowledgement_2020)
+        self.assertTrue(ret_val[0].value)
+
+        ret_val = self.imos.check_acknowledgement(self.bad_dataset)
+        self.assertFalse(ret_val[0].value)

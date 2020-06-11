@@ -1,0 +1,7 @@
+netcdf imos_acknowledgement_2020 {
+dimensions:
+variables:
+
+// global attributes:
+		:acknowledgement = "Any users of IMOS data are required to clearly acknowledge the source of the material derived from IMOS in the format: \"Data was sourced from Australia's Integrated Marine Observing System (IMOS) - IMOS is enabled by the National Collaborative Research Infrastructure Strategy (NCRIS).\"" ;
+}

@@ -42,7 +42,7 @@ variables:
 		:data_centre_email = "" ;
 		:author = 123L ;
 		:long_name = 123L ;
-		:acknowledgement = "" ;
+		:acknowledgement = "No thanks" ;
 		:distribution_statement = "You may not distribute this file." ;
 		:valid_min = 0L ;
 		:valid_max = 0L ;

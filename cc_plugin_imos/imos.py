@@ -1124,11 +1124,6 @@ class IMOS1_4Check(IMOSBaseCheck):
         self.mandatory_global_attributes.update({
             'data_centre': ['Australian Ocean Data Network (AODN)'],
             'data_centre_email': ['info@aodn.org.au'],
-            'acknowledgement': 'Any users( \(including re-?packagers\))? of IMOS data( \(including re-?packagers\))? '
-                               'are required to clearly acknowledge the source of the material( derived from IMOS)? '
-                               'in (this|the) format: "Data was sourced from the Integrated Marine Observing System '
-                               '\(IMOS\) - IMOS is( a national collaborative research infrastructure,)? supported by '
-                               'the Australian Government',
             'disclaimer': '.*Data, products and services from IMOS are provided "as is" without any warranty as to '
                           'fitness for a particular purpose\.',
             'license': ['http://creativecommons.org/licenses/by/4.0/'],
@@ -1260,5 +1255,44 @@ class IMOS1_4Check(IMOSBaseCheck):
                 check_attribute('quality_control_global_conventions', six.string_types,
                                 var, priority=BaseCheck.MEDIUM)
             )
+
+        return ret_val
+
+    def check_acknowledgement(self, dataset):
+        """
+        Check the global acknowledgement attribute and ensure it contains the
+        required text.
+        """
+        ret_val = []
+
+        pattern_2016 = (r"Any users( \(including re-?packagers\))? of IMOS data( \(including re-?packagers\))? "
+                        r"are required to clearly acknowledge the source of the material( derived from IMOS)? "
+                        r"in (this|the) format: \"Data was sourced from the Integrated Marine Observing System "
+                        r"\(IMOS\) - IMOS is( a national collaborative research infrastructure,)? supported by "
+                        r"the Australian Government")
+        pattern_2020 = (r"Any users of IMOS data are required to clearly acknowledge the source "
+                        r"of the material derived from IMOS in the format: \""
+                        r"Data was sourced from Australia's Integrated Marine Observing System "
+                        r"\(IMOS\) - IMOS is enabled by the National Collaborative Research "
+                        r"Infrastructure Strategy \(NCRIS\).\"")
+
+        # check if the attribute matches either pattern
+        result_2016 = check_attribute('acknowledgement', pattern_2016, dataset)
+        result_2020 = check_attribute('acknowledgement', pattern_2020, dataset)
+
+        # If one of them matches, the result is just True with no message
+        if result_2020.value:
+            ret_val.append(result_2020)
+            return ret_val
+        if result_2016.value:
+            ret_val.append(result_2016)
+            return ret_val
+
+        # If neither matches, want to return the result containing the new pattern as the required text
+        reasoning = ["Global attribute 'acknowledgement' doesn't contain "
+                     "the required text: '{pattern}'".format(pattern=pattern_2020)
+                     ]
+        result = Result(BaseCheck.HIGH, False, 'acknowledgement', reasoning)
+        ret_val.append(result)
 
         return ret_val
