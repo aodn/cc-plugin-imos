@@ -1,23 +1,26 @@
 language: python
 
-sudo: false
-
 python:
-  - "2.7"
   - "3.5"
+  - "3.6"
 
-before_install:
-  - wget http://bit.ly/miniconda -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-  - conda update conda
-  - conda config --add channels conda-forge --force
-  - conda create --name TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt
-  - source activate TEST
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      conda install --yes httpretty ;
-    fi
+addons:
+  apt:
+    packages:
+    - build-essential
+    - libudunits2-dev
+    - libnetcdf-dev
+    - netcdf-bin
+    - python3-dev
+
+env:
+  global:
+    - CHECKER_VERSION=4.1.1
+
+install:
+  - pip install compliance-checker==$CHECKER_VERSION
+  - pip install -e .
+  - pip install pytest
 
 script:
-- python setup.py test -s cc_plugin_imos.tests
+- pytest
