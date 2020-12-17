@@ -34,7 +34,7 @@ pipeline {
                 }
                 stage('test') {
                     steps {
-                        sh 'pip install --user -e .'
+                        sh 'pip install --user -r requirements.txt'
                         sh 'python setup.py test'
                     }
                 }
