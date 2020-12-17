@@ -17,6 +17,10 @@ INSTALL_REQUIRES = [
     'netCDF4>=1.2.4'
 ]
 
+TESTS_REQUIRE = [
+    'pytest'
+]
+
 setup(
     name="cc_plugin_imos",
     version=__version__,
@@ -28,6 +32,8 @@ setup(
     url="https://github.com/aodn/cc-plugin-imos.git",
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
+    tests_require=TESTS_REQUIRE,
+    extras_require={'testing': TESTS_REQUIRE},
     classifiers=[
       'Development Status :: 4 - Beta',
       'Intended Audience :: Developers',
