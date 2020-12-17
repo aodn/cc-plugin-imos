@@ -12,7 +12,10 @@ def readme():
         return f.read()
 
 
-reqs = [line.strip() for line in open('requirements.txt')]
+INSTALL_REQUIRES = [
+    'compliance-checker>=2.0.0',
+    'netCDF4>=1.2.4'
+]
 
 setup(
     name="cc_plugin_imos",
@@ -24,7 +27,7 @@ setup(
     author_email="Marty.Hidas@utas.edu.au",
     url="https://github.com/aodn/cc-plugin-imos.git",
     packages=find_packages(),
-    install_requires=reqs,
+    install_requires=INSTALL_REQUIRES,
     classifiers=[
       'Development Status :: 4 - Beta',
       'Intended Audience :: Developers',
