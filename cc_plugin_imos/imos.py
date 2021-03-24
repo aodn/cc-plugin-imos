@@ -1127,8 +1127,7 @@ class IMOS1_4Check(IMOSBaseCheck):
             'disclaimer': '.*Data, products and services from IMOS are provided "as is" without any warranty as to '
                           'fitness for a particular purpose\.',
             'license': ['http://creativecommons.org/licenses/by/4.0/'],
-            'standard_name_vocabulary': 'NetCDF Climate and Forecast \(CF\) Metadata Convention Standard Name Table ('
-                                        'Version |v)?\d+',
+            'standard_name_vocabulary': '.*CF.*Standard Name Table.*\d+',
         })
 
         self.time_units = '.*UTC'
