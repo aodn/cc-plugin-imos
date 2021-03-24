@@ -1127,7 +1127,7 @@ class IMOS1_4Check(IMOSBaseCheck):
             'disclaimer': '.*Data, products and services from IMOS are provided "as is" without any warranty as to '
                           'fitness for a particular purpose\.',
             'license': ['http://creativecommons.org/licenses/by/4.0/'],
-            'standard_name_vocabulary': '.*CF.*Standard Name Table.*\d+',
+            'standard_name_vocabulary': '.*CF.*(S|s)tandard (N|n)ame (T|t)able.*\d+',
         })
 
         self.time_units = '.*UTC'
