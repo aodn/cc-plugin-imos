@@ -33,6 +33,8 @@ jobs:
         pip install -r requirements.txt
         pip install pytest-runner
         pip install pytest-cov
+        pip install pipdeptree
+        pipdeptree
     - name: Test with pytest
       run: |
         pytest --cov=./ --cov-report=xml
