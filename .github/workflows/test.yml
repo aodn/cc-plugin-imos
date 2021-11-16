@@ -18,9 +18,6 @@ jobs:
     - name: Install libudunits2-dev and netcdf-bin
       run: |
         sudo apt install libudunits2-dev netcdf-bin
-    - name: Install cython3
-      run: |
-          sudo apt install cython3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
