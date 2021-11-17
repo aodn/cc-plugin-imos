@@ -13,7 +13,7 @@ def readme():
 
 
 INSTALL_REQUIRES = [
-    'compliance-checker==4.1.1',
+    'compliance-checker',
     'netCDF4>=1.2.4'
 ]
 
