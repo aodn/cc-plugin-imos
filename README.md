@@ -6,6 +6,8 @@ This is a checker for compliance with the [IMOS NetCDF Conventions](https://s3-a
 
 It works with the [ioos/compliance-checker](https://github.com/ioos/compliance-checker).
 
+## Licensing
+This project is licensed under the terms of the GNU GPLv3 license.
 
 ## Installation
 
@@ -28,7 +30,6 @@ pip install -e .
 ```bash
 python setup.py test -s cc_plugin_imos.tests
 ```
-
 
 ## Usage
 
