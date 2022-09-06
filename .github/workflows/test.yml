@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.5', '3.8' ]
+        python-version: [ '3.8' ]
     steps:
     - uses: actions/checkout@v2
     - name: Install libudunits2-dev and netcdf-bin
@@ -32,6 +32,7 @@ jobs:
       run: |
         pytest --cov=./ --cov-report=xml
     - name: Upload coverage to Codecov
+      if: ${{ !env.ACT }}
       uses: codecov/codecov-action@v1
       with:
         file: ./coverage.xml
