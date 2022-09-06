@@ -19,7 +19,8 @@ INSTALL_REQUIRES = [
 
 setup(
     name="cc_plugin_imos",
-    version=__version__,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description="Compliance Checker plugin for IMOS conventions",
     long_description=readme(),
     license='GPLv3',

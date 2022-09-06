@@ -1,0 +1,10 @@
+[run]
+branch = True
+source = cc_plugin_imos
+omit =
+    setup.py
+    cc_plugin_imos/__init__.py
+    cc_plugin_imos/tests
+
+[report]
+ignore_errors = True
