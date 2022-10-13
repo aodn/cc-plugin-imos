@@ -1269,11 +1269,11 @@ class IMOS1_4Check(IMOSBaseCheck):
                         r"in (this|the) format: \"Data was sourced from the Integrated Marine Observing System "
                         r"\(IMOS\) - IMOS is( a national collaborative research infrastructure,)? supported by "
                         r"the Australian Government")
-        pattern_2020 = (r"Any users of IMOS data are required to clearly acknowledge the source "
+        pattern_2020 = (r".*Any users of IMOS data are required to clearly acknowledge the source "
                         r"of the material derived from IMOS in the format: \""
                         r"Data was sourced from Australia's Integrated Marine Observing System "
                         r"\(IMOS\) - IMOS is enabled by the National Collaborative Research "
-                        r"Infrastructure Strategy \(NCRIS\).\"")
+                        r"Infrastructure Strategy \(NCRIS\)\.\"")
 
         # check if the attribute matches either pattern
         result_2016 = check_attribute('acknowledgement', pattern_2016, dataset)
