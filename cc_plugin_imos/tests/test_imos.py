@@ -271,7 +271,7 @@ class TestUtils(unittest.TestCase):
                                                 util.CHECK_GLOBAL_ATTRIBUTE,
                                                 reasoning=['title not string'])
 
-        self._test_check_attribute_type_generic(('TEMP',), np.float32, np.int,
+        self._test_check_attribute_type_generic(('TEMP',), np.float32, int,
                                                 self.good_dataset,
                                                 util.CHECK_VARIABLE,
                                                 reasoning=['TEMP not float type'])
