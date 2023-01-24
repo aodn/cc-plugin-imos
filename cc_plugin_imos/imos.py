@@ -788,7 +788,7 @@ class IMOSBaseCheck(BaseNCCheck):
 
             reasoning = ["Variable %s should have type Double or Float." % name]
             result = check_attribute_type((name,),
-                                          [np.float64, np.float, np.float32, np.float16, np.float128],
+                                          [np.float64, float, np.float32, np.float16, np.float128],
                                           dataset,
                                           self.CHECK_VARIABLE,
                                           result_name,

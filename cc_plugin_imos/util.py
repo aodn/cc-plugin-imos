@@ -26,8 +26,8 @@ OPERATOR_SUB_STRING = 6
 OPERATOR_CONVERTIBLE = 7
 OPERATOR_EMAIL = 8
 
-numeric_types = [np.float, np.double, np.float16, np.float32, np.float64, np.float128,
-                 np.int, np.byte, np.int8, np.int16, np.int32, np.int64]
+numeric_types = [float, np.double, np.float16, np.float32, np.float64, np.float128,
+                 int, np.byte, np.int8, np.int16, np.int32, np.int64]
 
 
 def is_numeric(variable_type):
