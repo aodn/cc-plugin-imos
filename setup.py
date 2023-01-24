@@ -3,7 +3,6 @@ from __future__ import with_statement
 from __future__ import absolute_import
 from setuptools import find_packages, setup
 
-from cc_plugin_imos import __version__
 from io import open
 
 
@@ -30,13 +29,16 @@ setup(
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
     classifiers=[
-      'Development Status :: 4 - Beta',
-      'Intended Audience :: Developers',
-      'Intended Audience :: Science/Research',
-      'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-      'Operating System :: POSIX :: Linux',
-      'Programming Language :: Python',
-      'Topic :: Scientific/Engineering',
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Topic :: Scientific/Engineering'
     ],
     entry_points={
       'compliance_checker.suites': [
