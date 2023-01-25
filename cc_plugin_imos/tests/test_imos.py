@@ -935,3 +935,16 @@ class TestIMOS1_4(TestIMOS1_3):
 
         ret_val = self.imos.check_acknowledgement(self.bad_dataset)
         self.assertFalse(ret_val[0].value)
+
+    def test_ragged_array(self):
+        ragged_array_dataset = self.load_dataset(self.static_files['ragged_array'])
+        self.imos.setup(ragged_array_dataset)
+
+        # should be ok with no coordinate variables
+        self.assertEqual(0, len(self.imos._coordinate_variables))
+        ret_val = self.imos.check_coordinate_variables(ragged_array_dataset)
+        self.assertTrue(all(r.value for r in ret_val))
+
+        # the only data variable is TEMP
+        data_vars = [v.name for v in self.imos._data_variables]
+        self.assertEqual(['TEMP'], data_vars)
