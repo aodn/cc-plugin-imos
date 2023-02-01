@@ -540,14 +540,12 @@ class TestIMOS1_3(unittest.TestCase):
         self.imos.setup(self.bad_dataset)
         self.assertEqual(len(self.imos._coordinate_variables), 2)
         ret_val = self.imos.check_coordinate_variables(self.bad_dataset)
-        self.assertEqual(len(ret_val), 5)
+        self.assertEqual(len(ret_val), 3)
         passed = [r.name for r in ret_val if r.value]
-        coord_vars = ['ticks', 'bobs']
-        self.assertListEqual(coord_vars, passed)
-        failed = {r.name: r.msgs for r in ret_val if not r.value}
-        for v in coord_vars:
-            self.assertIn("Coordinate variable values should be monotonic.", failed[v])
-        self.assertIn('Coordinate variables', list(failed.keys()))
+        self.assertListEqual(["ticks"], passed)
+        failed = {r.name: r.msgs[0] for r in ret_val if not r.value}
+        self.assertEqual(failed["bobs"], "Coordinate variable should be of numeric type.")
+        self.assertEqual(failed["ticks"], "Coordinate variable values should be monotonic.")
 
     def test_check_time_variable(self):
         ret_val = self.imos.check_time_variable(self.good_dataset)

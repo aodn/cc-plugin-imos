@@ -510,10 +510,7 @@ class IMOSBaseCheck(BaseNCCheck):
         Check all coordinate variables for
             numeric type (byte, float and integer)
             strictly monotonic values (increasing or decreasing)
-        Also check that at least one of them is a spatial or temporal coordinate variable.
         """
-
-        space_time_passed = False
 
         ret_val = []
         for var in self._coordinate_variables:
@@ -527,6 +524,10 @@ class IMOSBaseCheck(BaseNCCheck):
             result = Result(BaseCheck.HIGH, passed, result_name, reasoning)
             ret_val.append(result)
 
+            # can't do monotonic check if not numeric
+            if not passed:
+                continue
+
             passed = is_monotonic(get_masked_array(var))
             reasoning = None
 
@@ -535,19 +536,6 @@ class IMOSBaseCheck(BaseNCCheck):
 
             result = Result(BaseCheck.HIGH, passed, result_name, reasoning)
             ret_val.append(result)
-
-            if str(var.name) in _possibleaxis \
-                    or (hasattr(var, 'units') and (
-                    var.units in _possibleaxisunits or var.units.split(" ")[0] in _possibleaxisunits)) \
-                    or hasattr(var, 'positive'):
-                space_time_passed = True
-
-        result_name = 'Coordinate variables'
-        reasoning = None
-        if not space_time_passed:
-            reasoning = ["File should contain at least one space-time coordinate variable (none found)."]
-        result = Result(BaseCheck.HIGH, space_time_passed, result_name, reasoning)
-        ret_val.append(result)
 
         return ret_val
 
