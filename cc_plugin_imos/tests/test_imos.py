@@ -540,14 +540,12 @@ class TestIMOS1_3(unittest.TestCase):
         self.imos.setup(self.bad_dataset)
         self.assertEqual(len(self.imos._coordinate_variables), 2)
         ret_val = self.imos.check_coordinate_variables(self.bad_dataset)
-        self.assertEqual(len(ret_val), 5)
+        self.assertEqual(len(ret_val), 3)
         passed = [r.name for r in ret_val if r.value]
-        coord_vars = ['ticks', 'bobs']
-        self.assertListEqual(coord_vars, passed)
-        failed = {r.name: r.msgs for r in ret_val if not r.value}
-        for v in coord_vars:
-            self.assertIn("Coordinate variable values should be monotonic.", failed[v])
-        self.assertIn('Coordinate variables', list(failed.keys()))
+        self.assertListEqual(["ticks"], passed)
+        failed = {r.name: r.msgs[0] for r in ret_val if not r.value}
+        self.assertEqual(failed["bobs"], "Coordinate variable should be of numeric type.")
+        self.assertEqual(failed["ticks"], "Coordinate variable values should be monotonic.")
 
     def test_check_time_variable(self):
         ret_val = self.imos.check_time_variable(self.good_dataset)
@@ -935,3 +933,16 @@ class TestIMOS1_4(TestIMOS1_3):
 
         ret_val = self.imos.check_acknowledgement(self.bad_dataset)
         self.assertFalse(ret_val[0].value)
+
+    def test_ragged_array(self):
+        ragged_array_dataset = self.load_dataset(self.static_files['ragged_array'])
+        self.imos.setup(ragged_array_dataset)
+
+        # should be ok with no coordinate variables
+        self.assertEqual(0, len(self.imos._coordinate_variables))
+        ret_val = self.imos.check_coordinate_variables(ragged_array_dataset)
+        self.assertTrue(all(r.value for r in ret_val))
+
+        # the only data variable is TEMP
+        data_vars = [v.name for v in self.imos._data_variables]
+        self.assertEqual(['TEMP'], data_vars)

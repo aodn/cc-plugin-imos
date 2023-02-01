@@ -29,7 +29,7 @@ variables:
 		ticks:valid_max = "" ;
 		ticks:calendar = "" ;
 		ticks:long_name = 123L ;
-        float bobs(bobs) ;
+    char bobs(bobs) ;
 
 
 // global attributes:
@@ -76,5 +76,5 @@ data:
 
  ticks = 21500.0, 21500.1, 21500.2, 21500.3, 21500.9, 21500.8, 21500.7, 21500.6, 21500.4, 21500.5 ;
 
- bobs = 1, 2, 2, 4 ;
+ bobs = "1", "2", "3", "4" ;
 }

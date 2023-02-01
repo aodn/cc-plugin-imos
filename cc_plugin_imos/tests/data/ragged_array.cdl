@@ -1,0 +1,205 @@
+netcdf IMOS_ANMN-NRS_TZ_20181213_NRSROT_FV01_TEMP-aggregated-timeseries_END-20190523_C-20220607 {
+  dimensions:
+    INSTRUMENT = 3 ;
+    OBSERVATION = 215 ;
+    strlen = 256 ;
+
+  variables:
+    float DEPTH(OBSERVATION) ;
+      DEPTH:_FillValue = 99999.f ;
+      DEPTH:ancillary_variables = "DEPTH_quality_control" ;
+      DEPTH:coordinates = "TIME LATITUDE LONGITUDE NOMINAL_DEPTH" ;
+      DEPTH:long_name = "actual depth" ;
+      DEPTH:positive = "down" ;
+      DEPTH:reference_datum = "sea surface" ;
+      DEPTH:standard_name = "depth" ;
+      DEPTH:units = "m" ;
+      DEPTH:valid_max = 12000.f ;
+      DEPTH:valid_min = -5.f ;
+
+    byte DEPTH_quality_control(OBSERVATION) ;
+      DEPTH_quality_control:_FillValue = 99b ;
+      DEPTH_quality_control:flag_meanings = "No_QC_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Not_used Not_used Missing_value" ;
+      DEPTH_quality_control:flag_values = 0b, 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
+      DEPTH_quality_control:long_name = "quality flag for depth" ;
+      DEPTH_quality_control:standard_name = "depth status_flag" ;
+
+    double LATITUDE(INSTRUMENT) ;
+      LATITUDE:_FillValue = 99999. ;
+      LATITUDE:axis = "Y" ;
+      LATITUDE:long_name = "latitude" ;
+      LATITUDE:reference_datum = "WGS84 geographic coordinate system" ;
+      LATITUDE:standard_name = "latitude" ;
+      LATITUDE:units = "degrees_north" ;
+      LATITUDE:valid_max = 90. ;
+      LATITUDE:valid_min = -90. ;
+
+    double LONGITUDE(INSTRUMENT) ;
+      LONGITUDE:_FillValue = 99999. ;
+      LONGITUDE:axis = "X" ;
+      LONGITUDE:long_name = "longitude" ;
+      LONGITUDE:reference_datum = "WGS84 geographic coordinate system" ;
+      LONGITUDE:standard_name = "longitude" ;
+      LONGITUDE:units = "degrees_east" ;
+      LONGITUDE:valid_max = 180. ;
+      LONGITUDE:valid_min = -180. ;
+
+    float NOMINAL_DEPTH(INSTRUMENT) ;
+      NOMINAL_DEPTH:_FillValue = 99999.f ;
+      NOMINAL_DEPTH:axis = "Z" ;
+      NOMINAL_DEPTH:long_name = "nominal depth" ;
+      NOMINAL_DEPTH:positive = "down" ;
+      NOMINAL_DEPTH:reference_datum = "sea surface" ;
+      NOMINAL_DEPTH:standard_name = "depth" ;
+      NOMINAL_DEPTH:units = "m" ;
+      NOMINAL_DEPTH:valid_max = 12000.f ;
+      NOMINAL_DEPTH:valid_min = -5.f ;
+
+    float PRES(OBSERVATION) ;
+      PRES:_FillValue = 99999.f ;
+      PRES:ancillary_variables = "PRES_quality_control" ;
+      PRES:long_name = "sea_water_pressure_due_to_sea_water" ;
+      PRES:standard_name = "sea_water_pressure" ;
+      PRES:units = "dbar" ;
+      PRES:valid_max = 12000.f ;
+      PRES:valid_min = -15.f ;
+
+    float PRES_REL(OBSERVATION) ;
+      PRES_REL:_FillValue = 99999.f ;
+      PRES_REL:ancillary_variables = "PRES_REL_quality_control" ;
+      PRES_REL:long_name = "sea_water_pressure_due_to_sea_water" ;
+      PRES_REL:standard_name = "sea_water_pressure_due_to_sea_water" ;
+      PRES_REL:units = "dbar" ;
+      PRES_REL:valid_max = 12000.f ;
+      PRES_REL:valid_min = -15.f ;
+
+    byte PRES_REL_quality_control(OBSERVATION) ;
+      PRES_REL_quality_control:_FillValue = 99b ;
+      PRES_REL_quality_control:flag_meanings = "No_QC_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Not_used Not_used Missing_value" ;
+      PRES_REL_quality_control:flag_values = 0b, 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
+      PRES_REL_quality_control:long_name = "sea_water_pressure_due_to_sea_water status_flag" ;
+      PRES_REL_quality_control:standard_name = "sea_water_pressure_due_to_sea_water status_flag" ;
+
+    byte PRES_quality_control(OBSERVATION) ;
+      PRES_quality_control:_FillValue = 99b ;
+      PRES_quality_control:flag_meanings = "No_QC_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Not_used Not_used Missing_value" ;
+      PRES_quality_control:flag_values = 0b, 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
+      PRES_quality_control:long_name = "sea_water_pressure status_flag" ;
+      PRES_quality_control:standard_name = "sea_water_pressure status_flag" ;
+
+    float TEMP(OBSERVATION) ;
+      TEMP:_FillValue = 99999.f ;
+      TEMP:ancillary_variables = "TEMP_quality_control" ;
+      TEMP:long_name = "sea_water_temperature" ;
+      TEMP:standard_name = "sea_water_temperature" ;
+      TEMP:units = "degrees_Celsius" ;
+      TEMP:valid_max = 40.f ;
+      TEMP:valid_min = -2.5f ;
+      TEMP:coordinates = "TIME DEPTH PRES PRES_REL LATITUDE LONGITUDE" ;
+
+    byte TEMP_quality_control(OBSERVATION) ;
+      TEMP_quality_control:_FillValue = 99b ;
+      TEMP_quality_control:flag_meanings = "No_QC_performed Good_data Probably_good_data Bad_data_that_are_potentially_correctable Bad_data Value_changed Not_used Not_used Not_used Missing_value" ;
+      TEMP_quality_control:flag_values = 0b, 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
+      TEMP_quality_control:long_name = "quality flag for sea_water_temperature" ;
+      TEMP_quality_control:standard_name = "sea_water_temperature status_flag" ;
+
+    double TIME(OBSERVATION) ;
+      TIME:_FillValue = 99999. ;
+      TIME:axis = "T" ;
+      TIME:comment = "time aggregated from all files excluding out-of-water records" ;
+      TIME:long_name = "time" ;
+      TIME:standard_name = "time" ;
+      TIME:valid_max = 90000. ;
+      TIME:valid_min = 0. ;
+      TIME:units = "days since 1950-01-01 00:00:00 UTC" ;
+      TIME:calendar = "gregorian" ;
+
+    char instrument_id(INSTRUMENT,strlen) ;
+      instrument_id:long_name = "source deployment code, instrument make, model, serial_number" ;
+
+    short instrument_index(OBSERVATION) ;
+      instrument_index:long_name = "which instrument this obs is for" ;
+      instrument_index:instance_dimension = "INSTRUMENT" ;
+
+    char source_file(INSTRUMENT,strlen) ;
+      source_file:long_name = "source file for this instrument" ;
+
+  // global attributes:
+    :Conventions = "CF-1.6,IMOS-1.4" ;
+    :abstract = "Aggregated Time-series Product: This file contains all measurements of the selected variable from all instruments deployed at the selected site. Timestamps are chronologically ordered, but may not be at uniform intervals. Instrument details are stored as a variable in order to keep a record of the origin of each measurement. The quality control flags of the variable of interest and DEPTH are preserved. Out-of-water measurements have been excluded, but no other filtering has been applied to the input data." ;
+    :acknowledgement = "Any users of IMOS data are required to clearly acknowledge the source of the material derived from IMOS in the format: \"Data was sourced from the Integrated Marine Observing System (IMOS) - IMOS is a national collaborative research infrastructure, supported by the Australian Government.\" If relevant, also credit other organisations involved in collection of this particular datastream (as listed in \'credit\' in the metadata record)." ;
+    :author = "Australian Ocean Data Network (AODN)" ;
+    :author_email = "info@aodn.org.au" ;
+    :citation = "The citation in a list of references is: \"IMOS [year-of-data-download], [Title], [data-access-URL], accessed [date-of-access].\"." ;
+    :data_centre = "Australian Ocean Data Network (AODN)" ;
+    :data_centre_email = "info@aodn.org.au" ;
+    :date_created = "2022-06-07T05:50:17Z" ;
+    :disclaimer = "Data, products and services from IMOS are provided \"as is\" without any warranty as to fitness for a particular purpose." ;
+    :feature_type = "timeSeries" ;
+    :file_version = "Level 1 - Quality Controlled Data" ;
+    :file_version_quality_control = "Quality controlled data have been through quality assurance procedures such as automated routines and sensor calibration or visual inspection and flag of obvious errors. The data are in physical units using standard SI metric units with calibration and other pre-processing routines applied, all time and location values are in absolute coordinates to comply with standards and datum. Data includes flags for each measurement to indicate the estimated quality of the measurement. Metadata exists for the data or for the higher level dataset that the data belongs to. This is the standard IMOS data level and is what should be made available to AODN and to the IMOS community." ;
+    :generating_code_version = "0.0.0" ;
+    :geospatial_lat_max = -31.9896166667 ;
+    :geospatial_lat_min = -31.9896166667 ;
+    :geospatial_lon_max = 115.38525 ;
+    :geospatial_lon_min = 115.38525 ;
+    :geospatial_vertical_max = 57.89568f ;
+    :geospatial_vertical_min = 24.10219f ;
+    :history = "2022-06-07T05:50:17Z: Aggregated file created." ;
+    :institution_references = "http://imos.org.au/facilities/aodn/" ;
+    :keywords = "TEMP, AGGREGATED" ;
+    :keywords_vocabulary = "IMOS parameter names. See https://github.com/aodn/imos-toolbox/blob/master/IMOS/imosParameters.txt" ;
+    :license = "http://creativecommons.org/licenses/by/4.0/" ;
+    :lineage = "The variable of interest (VoI) is produced by sequentially concatenating the individual values in each of the input files. The resulting variable has dimension OBSERVATION. The VoI\'s ancillary_variables, in particular the corresponding quality-control flags, are also included, with dimension OBSERVATION. If the quality control variable is absent in any input file, the corresponding flags in the output file will be set to 0 (\'no QC performed\'). The variable TIME from input files is concatenated into a variable TIME(OBSERVATION). This could result in a non-uniform time interval. The DEPTH variable from input files is concatenated into a variable DEPTH(OBSERVATION). If not present, fill values are stored. DEPTH_quality_control, if present, is also included. Where  the DEPTH variable is absent, the corresponding DEPTH_quality_control values are set to 9 (\'missing value\'). The variables PRES (sea_water_pressure) and PRES_REL (sea_water_pressure_due_to_sea_water) are aggregated in exactly the same way as DEPTH. All output variables with the INSTRUMENT dimension are sorted in chronological order. In order to keep track of the provenance of VoI in the aggregated file, accessory variables are created. \n",
+      "This file was created using https://github.com/aodn/python-aodntools/blob/0.0.0/aodntools/timeseries_products/aggregated_timeseries.py" ;
+    :naming_authority = "IMOS" ;
+    :project = "Integrated Marine Observing System (IMOS)" ;
+    :references = "http://www.imos.org.au" ;
+    :rejected_files = "IMOS_ANMN-NRS_TZ_20181213T080000Z_NRSROT_FV00_NRSROT-1812-SBE39-43_END-20181214T004000Z_C-20190827T000000Z.nc" ;
+    :site_code = "NRSROT" ;
+    :source = "Mooring" ;
+    :standard_name_vocabulary = "NetCDF Climate and Forecast (CF) Metadata Convention Standard Name Table 45" ;
+    :time_coverage_end = "2019-05-22T17:40:00Z" ;
+    :time_coverage_start = "2018-12-13T08:00:00Z" ;
+    :title = "Long Timeseries Velocity Aggregated product: TEMP at NRSROT between 2018-12-13T08:00:00Z and 2019-05-23T01:49:59Z" ;
+
+
+  data:
+    DEPTH = 57.21067, 57.34966, 57.3298, 57.37944, 57.33973, 57.45886, 57.31987, 57.43901, 57.62763, 57.26031, 57.52835, 57.51843, 57.58792, 57.36951, 57.38937, 57.5085, 57.51843, 57.30995, 57.53828, 57.39929, 57.2206, 57.17096, 57.1511, 57.09154, 57.20074, 57.27024, 57.08162, 56.9327, 57.11139, 57.11139, 57.00219, 57.18089, 57.21067, 57.13124, 57.08162, 57.07168, 57.25038, 57.3298, 57.2206, 57.2901, 57.17096, 57.25038, 57.37944, 57.24046, 57.26031, 57.5085, 57.42908, 57.39929, 57.28016, 57.28016, 57.54821, 57.47872, 57.59784, 57.31987, 57.5085, 57.21067, 57.40922, 57.12132, 57.07168, 57.38937, 57.10147, 56.90292, 57.06176, 56.99226, 57.36951, 56.79371, 57.18089, 25.3151, 25.23194, 25.83369, 25.20517, 25.26406, 24.95916, 25.10545, 24.9424, 24.98212, 24.98128, 24.93645, 24.9946, 25.12439, 25.02069, 25.23273, 25.4932, 25.68807, 25.3733, 26.07651, 25.8872, 25.14905, 25.70497, 25.82592, 25.59065, 25.56749, 25.54764, 25.67144, 25.44429, 25.4299, 25.3385, 24.98809, 25.46437, 25.19439, 25.31883, 25.35551, 25.44116, 25.59511, 25.26819, 25.55736, 26.0369, 25.60681, 25.38437, 25.78576, 25.52251, 25.40282, 25.4543, 25.5976, 25.4438, 25.44963, 25.79065, 25.08327, 25.195, 25.26397, 25.21894, 25.50941, 25.28374, 25.31441, 25.40195, 25.44127, 25.41205, 25.59175, 25.35658, 25.54844, 25.43641, 25.40429, 25.498, 25.51081, 25.51047, 25.26148, 25.48358, 25.22804, 25.55713, 25.28117, 25.28148, 25.24187, 25.05304, 25.30136, 25.16997, 25.23119, 25.23507, 29.34383, 29.62446, 29.47276, 29.19804, 29.23229, 29.45394, 29.65875, 29.5024, 29.82024, 29.33358, 29.89602, 29.4923, 29.61914, 29.59953, 29.56255, 29.5742, 29.34675, 29.48965, 29.47876, 29.54489, 29.46584, 29.30021, 29.30602, 29.42962, 29.343, 29.67042, 29.869, 29.91405, 30.04928, 29.87547, 29.85626, 29.87065, 30.00184, 29.61986, 29.14781, 30.0825, 29.27428, 29.34082, 29.21492, 29.5558, 29.50205, 29.41269, 29.47171, 29.59402, 29.61511, 29.51133, 29.92091, 29.7608, 29.53349, 29.88744, 29.87502, 30.14187, 29.94503, 29.8692, 29.84187, 29.25401, 31.34881, 29.86846, 29.74491, 29.93961, 29.73934, 29.72, 29.77438, _, _, _, _, _ ;
+
+    DEPTH_quality_control = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4 ;
+
+    LATITUDE = -31.9896166667, -31.9896166667, -31.9896166667 ;
+
+    LONGITUDE = 115.38525, 115.38525, 115.38525 ;
+
+    NOMINAL_DEPTH = 55, 23, 27 ;
+
+    PRES = _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+    PRES_REL = 57.62, 57.76, 57.74, 57.79, 57.75, 57.87, 57.73, 57.85, 58.04, 57.67, 57.94, 57.93, 58, 57.78, 57.8, 57.92, 57.93, 57.72, 57.95, 57.81, 57.63, 57.58, 57.56, 57.5, 57.61, 57.68, 57.49, 57.34, 57.52, 57.52, 57.41, 57.59, 57.62, 57.54, 57.49, 57.48, 57.66, 57.74, 57.63, 57.7, 57.58, 57.66, 57.79, 57.65, 57.67, 57.92, 57.84, 57.81, 57.69, 57.69, 57.96, 57.89, 58.01, 57.73, 57.92, 57.62, 57.82, 57.53, 57.48, 57.8, 57.51, 57.31, 57.47, 57.4, 57.78, 57.2, 57.59, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ;
+
+    PRES_REL_quality_control = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ;
+
+    PRES_quality_control = 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 ;
+
+    TEMP = 18.1267, 18.1195, 18.103, 18.102, 18.0953, 18.0974, 18.0968, 18.0956, 18.0934, 18.0878, 18.0824, 18.0805, 18.0775, 18.0757, 18.0769, 18.0773, 18.066, 18.063, 18.0468, 18.0388, 18.0443, 18.0347, 18.0276, 18.0244, 18.0183, 18.0129, 18.0107, 18.0088, 18.0066, 18.0048, 18.004, 18.0014, 18.0008, 18.0015, 17.9952, 17.9947, 17.9949, 17.9987, 18.0016, 18.0009, 18.0011, 18.0024, 18.0029, 18.0001, 17.9935, 17.9937, 17.9955, 17.9972, 17.9951, 17.9968, 17.9955, 18.0146, 17.9996, 18.0111, 18.0078, 18.0078, 18.0117, 18.0161, 18.0187, 18.0233, 18.0196, 18.0177, 18.0129, 18.0118, 18.0069, 18, 17.997, 19.0868, 19.1288, 18.3725, 18.0791, 17.7431, 17.7661, 17.9407, 18.1661, 18.1356, 19.0036, 18.8199, 18.7117, 18.7809, 19.6139, 19.7143, 19.4002, 19.1122, 19.2712, 19.7855, 20.1716, 19.8344, 19.4409, 20.2287, 19.9886, 19.8048, 20.1898, 20.3779, 19.8326, 19.7972, 19.3106, 19.5244, 19.393, 18.5383, 18.6641, 18.6268, 19.1266, 19.2593, 19.6951, 19.2146, 19.7502, 20.3578, 20.1304, 19.9322, 19.5587, 19.7907, 19.6952, 19.838, 20.0776, 20.6118, 20.162, 20.135, 20.2232, 19.9158, 19.2899, 19.6453, 19.7678, 20.6516, 20.5636, 20.6765, 20.6006, 20.554, 20.4424, 20.7492, 20.4415, 20.7328, 20.7888, 20.9676, 21.2737, 20.9316, 21.1296, 21.3004, 21.3367, 21.2966, 21.543, 21.3916, 21.2681, 20.5223, 20.469, 20.7449, 21.2116, 21.5194, 21.6725, 21.4985, 21.249, 21.2366, 21.6058, 21.7262, 22.4197, 22.4819, 22.1957, 21.9672, 21.6204, 21.7085, 21.7856, 21.5686, 21.4509, 21.5459, 21.3111, 22.5208, 22.1967, 21.809, 21.5654, 21.7094, 21.4883, 21.3165, 21.2811, 21.3868, 21.6034, 21.6667, 21.8, 21.7931, 21.6071, 21.6845, 21.931, 22.2301, 21.8337, 21.2908, 21.5843, 21.9296, 22.0442, 22.2755, 22.1802, 22.111, 21.9825, 22.2224, 22.1031, 22.0404, 21.8257, 21.6875, 21.6333, 21.5782, 21.6467, 21.6539, 21.7312, 21.1514, 21.41, 21.0932, 21.4504, 21.6068, 21.5865, 21.5144, 21.1552, 21.3485, 21.6461, 21.6163, 21.33, 20.7732, 20.7972 ;
+
+    TEMP_quality_control = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ;
+
+    TIME = 25183.3337731481, 25183.3549537037, 25183.3858564815, 25183.4070370371, 25183.4379398148, 25183.4591203703, 25183.4900231481, 25183.5112037037, 25183.5421064815, 25183.5632870371, 25183.5941898148, 25183.6153703703, 25183.6462731481, 25183.6674537037, 25183.6983564815, 25183.7195370371, 25183.7504398148, 25183.7716203703, 25183.8025231481, 25183.8237037037, 25183.8546064815, 25183.8757870371, 25183.9066898148, 25183.9278703703, 25183.9587731481, 25183.9799537037, 25184.0108564815, 25184.0320370371, 25184.0629398148, 25184.0841203703, 25184.1150231481, 25184.1362037037, 25184.1671064815, 25184.1882870371, 25184.2191898148, 25184.2403703703, 25184.2712731481, 25184.2924537037, 25184.3233564815, 25184.3445370371, 25184.3754398148, 25184.3966203703, 25184.4275231481, 25184.4487037037, 25184.4796064815, 25184.5007870371, 25184.5316898148, 25184.5528703703, 25184.5837731481, 25184.6049537037, 25184.6358564815, 25184.6570370371, 25184.6879398148, 25184.7091203703, 25184.7400231481, 25184.7612037037, 25184.7921064815, 25184.8132870371, 25184.8441898148, 25184.8653703703, 25184.8962731481, 25184.9174537037, 25184.9483564815, 25184.9695370371, 25185.0004398148, 25185.0216203703, 25185.0525231481, 25183.6736111111, 25184.7152777778, 25185.7569444445, 25186.7986111111, 25187.8402777778, 25188.8819444445, 25189.9236111111, 25190.9652777778, 25192.0069444445, 25193.0486111111, 25194.0902777778, 25195.1319444445, 25196.1736111111, 25197.2152777778, 25198.2569444445, 25199.2986111111, 25200.3402777778, 25201.3819444445, 25202.4236111111, 25203.4652777778, 25204.5069444445, 25205.5486111111, 25206.5902777778, 25207.6319444445, 25208.6736111111, 25209.7152777778, 25210.7569444445, 25211.7986111111, 25212.8402777778, 25213.8819444445, 25214.9236111111, 25215.9652777778, 25217.0069444445, 25218.0486111111, 25219.0902777778, 25220.1319444445, 25221.1736111111, 25222.2152777778, 25223.2569444445, 25224.2986111111, 25225.3402777778, 25226.3819444445, 25227.4236111111, 25228.4652777778, 25229.5069444445, 25230.5486111111, 25231.5902777778, 25232.6319444445, 25233.6736111111, 25234.7152777778, 25235.7569444445, 25236.7986111111, 25237.8402777778, 25238.8819444445, 25239.9236111111, 25240.9652777778, 25242.0069444445, 25243.0486111111, 25244.0902777778, 25245.1319444445, 25246.1736111111, 25247.2152777778, 25248.2569444445, 25249.2986111111, 25250.3402777778, 25251.3819444445, 25252.4236111111, 25253.4652777778, 25254.5069444445, 25255.5486111111, 25256.5902777778, 25257.6319444445, 25258.6736111111, 25259.7152777778, 25260.7569444445, 25261.7986111111, 25262.8402777778, 25263.8819444445, 25264.9236111111, 25265.9652777778, 25273.9444444445, 25274.9861111111, 25276.0277777778, 25277.0694444445, 25278.1111111111, 25279.1527777778, 25280.1944444445, 25281.2361111111, 25282.2777777778, 25283.3194444445, 25284.3611111111, 25285.4027777778, 25286.4444444445, 25287.4861111111, 25288.5277777778, 25289.5694444445, 25290.6111111111, 25291.6527777778, 25292.6944444445, 25293.7361111111, 25294.7777777778, 25295.8194444445, 25296.8611111111, 25297.9027777778, 25298.9444444445, 25299.9861111111, 25301.0277777778, 25302.0694444445, 25303.1111111111, 25304.1527777778, 25305.1944444445, 25306.2361111111, 25307.2777777778, 25308.3194444445, 25309.3611111111, 25310.4027777778, 25311.4444444445, 25312.4861111111, 25313.5277777778, 25314.5694444445, 25315.6111111111, 25316.6527777778, 25317.6944444445, 25318.7361111111, 25319.7777777778, 25320.8194444445, 25321.8611111111, 25322.9027777778, 25323.9444444445, 25324.9861111111, 25326.0277777778, 25327.0694444445, 25328.1111111111, 25329.1527777778, 25330.1944444445, 25331.2361111111, 25332.2777777778, 25333.3194444445, 25334.3611111111, 25335.4027777778, 25336.4444444445, 25337.4861111111, 25338.5277777778, 25339.5694444445, 25340.6111111111, 25341.6527777778, 25342.6944444445, 25343.7361111111 ;
+
+    instrument_id = 
+    "NRSROT-1812; Wetlabs WQM; 86", 
+    "NRSROT-1812; Seabird SBE39 [600m] temp only; 4049", 
+    "[unknown deployment]; Seabird SBE39 [600m] temp only; [unknown serial number]" ;
+
+    instrument_index = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ;
+
+    source_file = 
+    "IMOS_ANMN-NRS_BCKOSTUZ_20181213T080038Z_NRSROT_FV01_NRSROT-1812-WQM-55_END-20181215T013118Z_C-20190828T000000Z.nc", 
+    "IMOS_ANMN-NRS_TZ_20181213T080000Z_NRSROT_FV01_NRSROT-1812-SBE39-23_END-20190306T160000Z_C-20190827T000000Z.nc", 
+    "IMOS_ANMN-NRS_TZ_20190313T144000Z_NRSROT_FV01_NRSROT-1903-SBE39-27_END-20190524T010000Z_C-20190827T000000Z.nc" ;
+
+} // group /

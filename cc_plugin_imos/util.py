@@ -10,6 +10,7 @@ from netCDF4 import Dataset
 
 from compliance_checker.base import BaseCheck
 from compliance_checker.base import Result
+from compliance_checker.cfutil import is_geophysical
 from compliance_checker.cf.util import units_convertible
 import six
 
@@ -182,7 +183,7 @@ def find_data_variables(dataset, coordinate_variables, ancillary_variables):
     """
         Finds all variables that could be considered Data variables.
 
-        Returns a dictionary mapping name -> variable.
+        Returns a list of NetCDF Variable objects.
 
         Excludes variables that are:
             - coordinate variables
@@ -196,12 +197,25 @@ def find_data_variables(dataset, coordinate_variables, ancillary_variables):
     auxiliary_coordinate_variables = find_auxiliary_coordinate_variables(dataset)
 
     for name, var in six.iteritems(dataset.variables):
-        if var not in coordinate_variables and var not in \
-                ancillary_variables and var.dimensions and var not in \
-                auxiliary_coordinate_variables \
-                and not hasattr(var, 'flag_meanings') \
-                and is_numeric(var.dtype):
-            data_variables.append(var)
+        # not a coordinate or ancillary variable
+        if (var in coordinate_variables or
+                var in auxiliary_coordinate_variables or
+                var in ancillary_variables):
+            continue
+
+        # has at least one dimension and is numeric
+        if len(var.dimensions) == 0 or not is_numeric(var.dtype):
+            continue
+
+        # not a flag variable
+        if hasattr(var, 'flag_meanings'):
+            continue
+
+        # not a count/index variable for ragged array files
+        if hasattr(var, "sample_dimension") or hasattr(var, "instance_dimension"):
+            continue
+
+        data_variables.append(var)
 
     return data_variables
 
