@@ -6,13 +6,14 @@ http://www.imos.org.au/
 
 from __future__ import absolute_import
 import numpy as np
+import re
+import six
 
 from cc_plugin_imos import __version__
 from cc_plugin_imos.imos import IMOS1_3Check, IMOS1_4Check
 from cc_plugin_imos.util import (check_attribute, check_attribute_dict,
                                  is_timestamp)
 from compliance_checker.base import BaseCheck, BaseNCCheck, Result
-import six
 
 
 ################################################################################
@@ -61,7 +62,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
             'sst_dtime'
         ]
 
-        self.time_units = ['seconds since 1981-01-01 00:00:00']
+        self.time_units = r"^seconds since 1981-01-01.*$"
 
     @classmethod
     def beliefs(cls):
@@ -129,9 +130,14 @@ class IMOSGHRSSTCheck(BaseNCCheck):
                 check_attribute_dict(time_attributes, time_var)
             )
 
-            ret_val.append(
-                check_attribute('units', self.time_units, time_var, BaseCheck.MEDIUM)
-            )
+            if re.match(self.time_units, time_var.units):
+                result = Result(BaseCheck.MEDIUM, True, name='time')
+                result.msgs = ["time units is correct"]
+                ret_val.append(result)
+            else:
+                result = Result(BaseCheck.MEDIUM, False, name='time')
+                result.msgs = ["time units should be r'seconds since 1981-01-01 .*'"]
+                ret_val.append(result)
 
         return ret_val
 
