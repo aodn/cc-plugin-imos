@@ -62,7 +62,7 @@ class IMOSGHRSSTCheck(BaseNCCheck):
             'sst_dtime'
         ]
 
-        self.time_units = r"^seconds since 1981-01-01( 00:00:00.*|).*$"
+        self.time_units = r"^seconds since 1981-01-01( 00:00:00(Z|)|)$"
 
     @classmethod
     def beliefs(cls):
