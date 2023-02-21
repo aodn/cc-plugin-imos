@@ -5,7 +5,6 @@ import os
 import shutil
 import unittest
 
-import netCDF4
 from netCDF4 import Dataset
 
 from cc_plugin_imos.srs import IMOSGHRSSTCheck
@@ -63,6 +62,7 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
         self.srs = IMOSGHRSSTCheck()
         self.srs_good_dataset = self.load_dataset(self.static_files['ghrsst_good_data'])
         self.srs_bad_dataset = self.load_dataset(self.static_files['ghrsst_bad_data'])
+        self.srs_good_dataset_h08 = self.load_dataset(self.static_files['ghrsst_good_data_h08'])  # himawari 08 dataset with time unit not containing HH:MM:SS
 
     def test_check_global_attributes(self):
         ret_val = self.srs.check_global_attributes(self.srs_bad_dataset)
@@ -107,13 +107,18 @@ class TestGHRSSTIMOSBase(unittest.TestCase):
 
         for result in ret_val:
             self.assertTrue(result.value)
-
+        ############
         ret_val = self.srs.check_time_variable(self.srs_bad_dataset)
 
         for result in ret_val[1:]:
             self.assertFalse(result.value)
 
         self.assertEqual(len(ret_val), 5)
+        ############
+        ret_val = self.srs.check_time_variable(self.srs_good_dataset_h08)
+
+        for result in ret_val:
+            self.assertTrue(result.value)
 
     def test_check_variable_attribute_type(self):
         ret_val = self.srs.check_variable_attribute_type(self.srs_good_dataset)
