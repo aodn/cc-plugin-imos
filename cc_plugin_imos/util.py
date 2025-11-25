@@ -10,7 +10,7 @@ from netCDF4 import Dataset
 
 from compliance_checker.base import BaseCheck
 from compliance_checker.base import Result
-from compliance_checker.cfutil import is_geophysical
+from compliance_checker.cf.util import is_geophysical
 from compliance_checker.cf.util import units_convertible
 import six
 
