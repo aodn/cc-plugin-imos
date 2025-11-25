@@ -30,6 +30,9 @@ jobs:
         pip install pytest-cov
         pip list
         pip show compliance-checker
+        pip install compliance-checker==5.4.2
+        pip list
+        pip show compliance-checker
     - name: Test with pytest
       run: |
         pytest --cov=./ --cov-report=xml
