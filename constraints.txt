@@ -1,1 +1,2 @@
 cftime<1.5
+compliance-checker==5.4.2
