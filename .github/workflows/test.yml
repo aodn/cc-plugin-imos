@@ -2,9 +2,9 @@ name: cc-plugin-imos
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, v2 ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, v2 ]
 
 jobs:
   build:
@@ -28,7 +28,6 @@ jobs:
         pip install numpy
         pip install -r requirements.txt
         pip install pytest-cov
-        pip show compliance-checker
     - name: Test with pytest
       run: |
         pytest --cov=./ --cov-report=xml
