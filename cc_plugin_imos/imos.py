@@ -97,7 +97,8 @@ class IMOSBaseCheck(BaseNCCheck):
             "IMOS standard set using the IODE flags",
             "ARGO quality control procedure",
             "BOM (SST and Air-Sea flux) quality control procedure",
-            "WOCE quality control procedure"
+            "WOCE quality control procedure",
+            "Ocean Data Standards, UNESCO 2013 - IOC Manuals and Guides, 54, Volume 3 Version 1"
         ]
 
         self._coordinate_variables = None
@@ -1124,7 +1125,8 @@ class IMOS1_4Check(IMOSBaseCheck):
             "IMOS standard flags",
             "ARGO quality control procedure",
             "BOM (SST and Air-Sea flux) quality control procedure",
-            "WOCE quality control procedure"
+            "WOCE quality control procedure",
+            "Ocean Data Standards, UNESCO 2013 - IOC Manuals and Guides, 54, Volume 3 Version 1"
         ]
 
     def check_geospatial_vertical_positive(self, dataset):
